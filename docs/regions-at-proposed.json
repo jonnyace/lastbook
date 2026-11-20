@@ -1,0 +1,634 @@
+{
+  "about": "Proposed region definitions for detailed maps of Austria: nine states (Bundesländer), one region each, with the whole country as one region as an alternative. See docs/REGIONS-AT.md. Not read by any code.",
+  "status": "proposal",
+  "checked": "2026-11-17",
+  "codes": {
+    "proposal": "ISO 3166-2:AT codes, AT-1 to AT-9; AT for the whole country if it is one region, or eu-at if pull request #84's country codes land.",
+    "why": "A hyphenated code keeps Austrian regions apart from US state codes. A bare AT is not in STATE_CODES (engine/address_search.py). The numbers match BEV's state key BL_KZ, checked in the boundary files.",
+    "verified": "Search only: the Umweltbundesamt code list and Wikipedia agree; the ISO site was not opened."
+  },
+  "layer_keys": {
+    "terrain": "terrain.sqlite",
+    "water": "water.sqlite",
+    "dams": "water.sqlite (nid part today)",
+    "crops": "crops.sqlite",
+    "buildings": "buildings.sqlite",
+    "places": "places.sqlite",
+    "addresses": "derived/geo/addresses/<code>.sqlite",
+    "pois": "poi rows in national.sqlite"
+  },
+  "licences": {
+    "CC-BY-4.0": {
+      "name": "Creative Commons Attribution 4.0 International",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Credit the source, link the licence, note changes. Address register: \"© Österreichisches Adressregister, Stichtagsdaten vom TT.MM.JJJJ\". AMA: source must be named.",
+      "share_alike": false,
+      "verified": "named in every BEV, AMA, geoland.at, BMLUK and BMI record listed here, opened 2026-11-17; licence text not reopened. AMA's licence text also says \"CC-BY-AT 4.0\" (no such national version exists for 4.0; to confirm with AMA)."
+    },
+    "ODbL-1.0": {
+      "name": "Open Database License 1.0",
+      "url": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "attribution": "\"© OpenStreetMap contributors\"",
+      "share_alike": true,
+      "verified": "as for the US map"
+    }
+  },
+  "country_layers": {
+    "terrain": [
+      {
+        "dataset": "Digitales Geländemodell (DGM) Österreich, 10 m, from airborne laser scanning",
+        "publisher": "geoland.at",
+        "url": "https://www.data.gv.at/datasets/d88a1246-9684-480b-a480-ff63286b35b7",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "Bare earth. ZIP with GeoTIFF. Record last updated 2021-04-15. Download 1,938,031,542 bytes (about 1.9 GB), file dated 2019-06-18, read 2026-11-19."
+      },
+      {
+        "dataset": "ALS DTM Höhenraster 1 m, Stichtag 15.09.2025",
+        "publisher": "BEV, with the states",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/ec12896e-1ecd-47ad-8d48-44d236e383cc",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "up to date",
+        "notes": "55 tiles on a 50 km EPSG:3035 grid; one tile measured 7,635,990,378 bytes."
+      },
+      {
+        "dataset": "DGM Höhenraster 25 m (Cloud Optimized GeoTIFF)",
+        "publisher": "BEV",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/7764c753-fbce-4b56-b147-5522e0347c21",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "ready-made fallback",
+        "notes": "From aerial photographs; not updated since 2020. DGM_R25.tif is 786,013,673 bytes."
+      }
+    ],
+    "water": [
+      {
+        "dataset": "Gesamtgewässernetz (GGN) - Fliessgewässer (Routen), v19",
+        "publisher": "BMLUK",
+        "url": "https://www.data.gv.at/datasets/c2287ccb-f44c-48cd-bf7c-ac107b771246",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "Federal river network (WFD keywords). From v19, stretches that are not waters under the Water Act are marked; leave them out."
+      },
+      {
+        "dataset": "Gesamtgewässernetz (GGN) - Stehende Gewässer",
+        "publisher": "BMLUK",
+        "url": "https://www.data.gv.at/datasets/ce50ffa6-5032-4771-90a2-1c48d6a0ac85",
+        "licence": "CC-BY-4.0",
+        "verified": "search only",
+        "role": "lakes"
+      },
+      {
+        "dataset": "DLM Gewässer, Stichtag 23.03.2026",
+        "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/ff81c023-2e5a-488e-879e-6dc610b85e44",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "springs and water lines",
+        "notes": "Rivers and streams, water supply lines, springs (Quellen), waterfalls. GeoPackage 396 MB. Lakes not listed in its description."
+      }
+    ],
+    "dams": [
+      {
+        "dataset": "Liste großer Stauanlagen (XLSX, Stand August 2025)",
+        "publisher": "linked from BMLUK under the ATCOLD heading",
+        "url": "https://www.bmluk.gv.at/themen/wasser/nutzung-wasser/stauanlagen-talsperren/stauanlagen.html",
+        "licence": null,
+        "verified": "page opened; list not opened",
+        "role": "candidate",
+        "notes": "Coordinates and terms of reuse not checked."
+      },
+      {
+        "dataset": "OSM waterway=dam",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://taginfo.geofabrik.de/europe:austria/",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "1,258 objects on 2026-11-16."
+      }
+    ],
+    "crops": [
+      {
+        "dataset": "INVEKOS Schläge Österreich 2026-1 (polygons)",
+        "publisher": "AMA (Agrarmarkt Austria)",
+        "url": "https://inspire.lfrz.gv.at/009501/ds/inspire_schlaege_2026-1_polygon.gpkg.zip",
+        "licence": "CC-BY-4.0",
+        "verified": "INSPIRE record for 2025-1 opened 2026-11-17; 2026-1 sampled through the OGC API",
+        "role": "primary",
+        "api": "https://gis.lfrz.gv.at/api/geodata/i009501/ogc/features/v1/",
+        "notes": "Crop per field (snar_code, snar_bezeichnung), e.g. 901 WEIN, 813 MARILLEN, 817 TAFELÄPFEL, 818 TAFELBIRNEN, 820 ZWETSCHKEN. Vector, not a raster. Only fields declared for EU subsidy. GeoPackage ZIP 1,255 MB. Full code list not read."
+      }
+    ],
+    "buildings": [
+      {
+        "dataset": "DLM Bauwerke, Stichtag 23.03.2026",
+        "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/b7f4843a-83d1-419a-bc87-bc2aaa83976d",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "Complete nationwide building polygons with ground, mean and maximum height (LoD1); linked to the address register through the AGWR object number. GeoPackage 2,646 MB."
+      },
+      {
+        "dataset": "OSM buildings / Overture buildings",
+        "publisher": "OpenStreetMap contributors; Overture Maps Foundation",
+        "url": "https://docs.overturemaps.org/attribution",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "alternative"
+      }
+    ],
+    "places": [
+      {
+        "dataset": "DLM Geographische Namen, Stichtag 23.03.2026",
+        "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/49ca903b-2ca8-4751-8b5d-490bb73dcfec",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "Over 220,000 names: settlements, areas, mountains, glaciers, waters, field names. GeoPackage 59 MB. CSV tables of mountains and lakes with heights."
+      },
+      {
+        "dataset": "VGD municipality names",
+        "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "supplement"
+      },
+      {
+        "dataset": "OSM named places",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://download.geofabrik.de/europe/austria.html",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "supplement"
+      }
+    ],
+    "addresses": [
+      {
+        "dataset": "Overture addresses",
+        "publisher": "Overture Maps Foundation, from BEV through OpenAddresses",
+        "url": "https://docs.overturemaps.org/attribution",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "\"Austrian Address Register\", CC BY 4.0, accessed by Overture 2026-11-17 (page read 2026-11-19; it said 2026-10-15 on 2026-11-17; the page refreshes this date). Region field for Austrian rows not checked."
+      },
+      {
+        "dataset": "Adresse Relationale Tabellen, Stichtag 01.10.2026",
+        "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+        "url": "https://data.bev.gv.at/geonetwork/srv/api/records/040eebd0-d462-4eb0-b2a6-9ed778b83ac8",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "direct source",
+        "notes": "CSV in a 118,545,233-byte ZIP. Credit line: \"© Österreichisches Adressregister, Stichtagsdaten vom TT.MM.JJJJ\"."
+      }
+    ],
+    "pois": [
+      {
+        "dataset": "OSM amenities as the US map uses them",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://taginfo.geofabrik.de/europe:austria/",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "counts_as_of": "2026-11-16T21:21Z",
+        "counts": {
+          "amenity=pharmacy": 1520,
+          "amenity=fire_station": 4066,
+          "amenity=police": 952,
+          "amenity=hospital": 223,
+          "amenity=drinking_water": 8560,
+          "man_made=water_well": 2131,
+          "emergency=water_tank": 859,
+          "emergency=drinking_water": 2,
+          "emergency=assembly_point": 186,
+          "emergency=defibrillator": 2071
+        }
+      },
+      {
+        "dataset": "Polizeidienststellen Österreich (BMI)",
+        "publisher": "BMI (Bundesministerium für Inneres)",
+        "url": "https://www.data.gv.at/datasets/4e5c9414-2886-462e-b19f-a598ad065522",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "proposed new kind",
+        "claim_url": "https://www.oesterreich.gv.at/de/themen/notfaelle_unfaelle_und_kriminalitaet/katastrophenfaelle/1/Seite.29500329",
+        "notes": "CSV and GeoPackage, files dated 2026-11-11. BMI says all Polizeiinspektionen stay staffed in a blackout as contact points (oesterreich.gv.at, last updated 2026-02-16). The list has 924 rows of every office kind; only ArtLang = Polizeiinspektion (744 rows, counted 2026-11-19) carries that promise.",
+        "filter": "ArtLang = Polizeiinspektion"
+      },
+      {
+        "dataset": "Liste der Krankenanstalten in Österreich (XLSX, Stand 18.09.2026)",
+        "publisher": "BMASGPK",
+        "url": "https://www.sozialministerium.gv.at/Themen/Gesundheit/Gesundheitssystem/Krankenanstalten/Krankenanstalten-und-selbststaendige-Ambulatorien-in-Oesterreich/Krankenanstalten-in-Oesterreich.html",
+        "licence": null,
+        "verified": "2026-11-17",
+        "role": "cross-check",
+        "notes": "Offered for reuse (\"steht zur Weiterverarbeitung als Download zur Verfügung\") as a voluntary service; no licence or credit line named. Coordinates not checked."
+      }
+    ]
+  },
+  "not_open_nationwide": [],
+  "addressing": {
+    "postal_code": {
+      "format": "Four digits.",
+      "example_pattern": "0000"
+    },
+    "order": "Street, then house number/staircase/door, then postcode and town (\"Grünwaldweg 16/13/5, 2283 Obersiebenbrunn\", Austrian Post, Richtig adressieren, February 2020). Where an address occurs twice in one municipality, the locality replaces the municipality or goes on its own line before the postcode.",
+    "notes": "normalize() and norm() keep only a-z and 0-9 (\"Grünwaldweg\" becomes \"gr nwaldweg\"); is_address_query() needs a number first and stops at a slash, so \"16/13/5 Grünwaldweg\" is not an address; \"1060 Wien\" is read as house number 1060 on a street called \"wien\"; _parts() reads only a five-digit postcode as the last word; tools/build_addresses.py keeps only country = 'US'. Tried in this repository on 2026-11-17."
+  },
+  "whole_country": {
+    "code": "AT",
+    "name": "Österreich",
+    "name_en": "Austria",
+    "bbox": {
+      "west": 9.5307,
+      "south": 46.3723,
+      "east": 17.1608,
+      "north": 49.0205,
+      "padded_0_15": [
+        9.38,
+        46.22,
+        17.32,
+        49.18
+      ],
+      "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+    },
+    "area_km2": 83927,
+    "area_official": {
+      "area_km2": 83884,
+      "sources": [
+        {
+          "dataset": "Fläche und Benützungsarten (BEV, Statistik Austria), 83,884 km²",
+          "publisher": "WKO",
+          "url": "https://www.wko.at/oe/statistik/bundesland/flaecheben.pdf",
+          "as_of": "2025-01-01",
+          "verified": "2026-11-19"
+        },
+        {
+          "dataset": "Österreich. Zahlen. Daten. Fakten 2024/25, 83,883.87 km²",
+          "publisher": "Statistik Austria",
+          "url": "https://www.statistik.at/fileadmin/publications/OZDF-DE-24-25.pdf",
+          "verified": "2026-11-19"
+        }
+      ],
+      "notes": "The computed area is 43 km² more."
+    },
+    "extremes": {
+      "west": "KG Nofels, Feldkirch",
+      "east": "KG Deutsch Jahrndorf",
+      "north": "KG Rottal, Haugschlag",
+      "south": "KG Bad Vellach, Eisenkappel-Vellach"
+    },
+    "notes": "Alternative to the nine regions; see \"Still undecided\" in REGIONS-AT.md.",
+    "pull_request_84": {
+      "code": "eu-at",
+      "box_source": "bounding box of Geofabrik's OpenStreetMap extract polygon",
+      "padded_0_15": [
+        9.3768,
+        46.2198,
+        17.3141,
+        49.174
+      ],
+      "unpadded_derived": [
+        9.5268,
+        46.3698,
+        17.1641,
+        49.024
+      ],
+      "difference_from_vgd_deg": [
+        -0.0039,
+        -0.0025,
+        0.0033,
+        0.0035
+      ],
+      "verified": "pull request description read 2026-11-17; its code not read",
+      "notes": "The same whole-country region. Within 0.004° of the official boundary on every side; the extract has no state lines."
+    }
+  },
+  "computation": {
+    "tools": "pyproj 3.8.0, PROJ 9.8.1, pyshp 3.1.9",
+    "transformation": "Inverse of Austria Lambert + MGI to WGS 84 (3) (with axis order normalized for visualization)",
+    "accuracy_m": 1.5,
+    "vertices": 6545841,
+    "cadastral_municipalities": 7850,
+    "area_method": "geodesic area on the WGS 84 ellipsoid (pyproj.Geod)"
+  },
+  "regions": [
+    {
+      "code": "AT-1",
+      "name": "Burgenland",
+      "name_en": "Burgenland",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "1",
+      "bbox": {
+        "west": 15.9962,
+        "south": 46.8306,
+        "east": 17.1608,
+        "north": 48.1187,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Burgenland_20260402.zip",
+          "sha256": "8a74e6cfcf7ccd29b28c541bfa2224fee3c098a12e1e79ab4e2ea270faaee6bd",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Burgenland_20260402.zip"
+        },
+        "padded_0_15": [
+          15.84,
+          46.68,
+          17.32,
+          48.27
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 3964,
+      "layers": "country_layers"
+    },
+    {
+      "code": "AT-2",
+      "name": "Kärnten",
+      "name_en": "Carinthia",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "2",
+      "bbox": {
+        "west": 12.6568,
+        "south": 46.3723,
+        "east": 15.0651,
+        "north": 47.1313,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Kaernten_20260402.zip",
+          "sha256": "022a13a9f8287ea47896257338eaa1a354d2dc37debc39c30c0e88bb208d3e3f",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Kaernten_20260402.zip"
+        },
+        "padded_0_15": [
+          12.5,
+          46.22,
+          15.22,
+          47.29
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 9543,
+      "layers": "country_layers"
+    },
+    {
+      "code": "AT-3",
+      "name": "Niederösterreich",
+      "name_en": "Lower Austria",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "3",
+      "bbox": {
+        "west": 14.4526,
+        "south": 47.4222,
+        "east": 17.0688,
+        "north": 49.0205,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Niederoesterreich_20260402.zip",
+          "sha256": "b5561925f8e01e8dca3262ee5a9c2530c413b6b4d08c55631f23a7f9314da481",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Niederoesterreich_20260402.zip"
+        },
+        "padded_0_15": [
+          14.3,
+          47.27,
+          17.22,
+          49.18
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 19195,
+      "layers": "country_layers",
+      "notes": "Contains the whole AT-9 (Vienna) box."
+    },
+    {
+      "code": "AT-4",
+      "name": "Oberösterreich",
+      "name_en": "Upper Austria",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "4",
+      "bbox": {
+        "west": 12.7492,
+        "south": 47.4611,
+        "east": 14.9922,
+        "north": 48.7726,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Oberoesterreich_20260402.zip",
+          "sha256": "c3da8cfbebe75aecf62331d9c757749e2ecf698a4e164ba7134c019ca8148f02",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Oberoesterreich_20260402.zip"
+        },
+        "padded_0_15": [
+          12.59,
+          47.31,
+          15.15,
+          48.93
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 11985,
+      "layers": "country_layers"
+    },
+    {
+      "code": "AT-5",
+      "name": "Salzburg",
+      "name_en": "Salzburg",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "5",
+      "bbox": {
+        "west": 12.0761,
+        "south": 46.9439,
+        "east": 13.9961,
+        "north": 48.0415,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Salzburg_20260402.zip",
+          "sha256": "68fd2130de7d6963a239bc2c382d1a494ea16f8a82e23003f27a3a34837bb269",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Salzburg_20260402.zip"
+        },
+        "padded_0_15": [
+          11.92,
+          46.79,
+          14.15,
+          48.2
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 7161,
+      "layers": "country_layers"
+    },
+    {
+      "code": "AT-6",
+      "name": "Steiermark",
+      "name_en": "Styria",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "6",
+      "bbox": {
+        "west": 13.5633,
+        "south": 46.612,
+        "east": 16.1718,
+        "north": 47.8279,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Steiermark_20260402.zip",
+          "sha256": "047ff0d16f67183c40bf083778b9862b1590ec24bcf61e26239c9da0ab4e2827",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Steiermark_20260402.zip"
+        },
+        "padded_0_15": [
+          13.41,
+          46.46,
+          16.33,
+          47.98
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 16413,
+      "layers": "country_layers"
+    },
+    {
+      "code": "AT-7",
+      "name": "Tirol",
+      "name_en": "Tyrol",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "7",
+      "bbox": {
+        "west": 10.0978,
+        "south": 46.6514,
+        "east": 12.966,
+        "north": 47.743,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Tirol_20260402.zip",
+          "sha256": "2f954288bb4b0f15267a8efa6fa51c2cbbc139952bc64dc19bff47a562c955e9",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Tirol_20260402.zip"
+        },
+        "padded_0_15": [
+          9.94,
+          46.5,
+          13.12,
+          47.9
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 12648,
+      "layers": "country_layers",
+      "notes": "North and East Tyrol do not touch; the box spans parts of Salzburg and of South Tyrol (Italy), and its edges take in parts of Vorarlberg, Carinthia, Bavaria and Switzerland. Jungholz lies inside it."
+    },
+    {
+      "code": "AT-8",
+      "name": "Vorarlberg",
+      "name_en": "Vorarlberg",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "state",
+      "bl_kz": "8",
+      "bbox": {
+        "west": 9.5307,
+        "south": 46.8409,
+        "east": 10.2372,
+        "north": 47.5961,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Vorarlberg_20260402.zip",
+          "sha256": "51659e26f611c957456d559193bd514aba41dd7b0a967f5f3bb994e090061c38",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Vorarlberg_20260402.zip"
+        },
+        "padded_0_15": [
+          9.38,
+          46.69,
+          10.39,
+          47.75
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 2603,
+      "layers": "country_layers",
+      "notes": "East edge set by KG Mittelberg (Kleinwalsertal). No Lake Constance polygons in VGD; the box ends at the shore."
+    },
+    {
+      "code": "AT-9",
+      "name": "Wien",
+      "name_en": "Vienna",
+      "country": "Austria",
+      "country_iso": "AT",
+      "admin_level": "city-state",
+      "bl_kz": "9",
+      "bbox": {
+        "west": 16.1818,
+        "south": 48.1179,
+        "east": 16.5775,
+        "north": 48.3227,
+        "source": {
+          "dataset": "Verwaltungsgrenzen (VGD) BEV Stichtag 01.04.2026, one shapefile per state, cadastral municipality polygons with state key BL_KZ; every vertex transformed from EPSG:31287 to EPSG:4326",
+          "publisher": "BEV (Bundesamt für Eich- und Vermessungswesen)",
+          "licence": "CC-BY-4.0",
+          "url": "https://data.bev.gv.at/geonetwork/srv/api/records/2d7b8f24-deb9-42eb-82f2-c7c1c7ff7075",
+          "verified": "2026-11-17",
+          "file": "VGD_Wien_20260402.zip",
+          "sha256": "d05a509c554ac366e04e3ce3be83318d47277723b25de7649fa47bd2987084f5",
+          "url_file": "https://data.bev.gv.at/download/Verwaltungsgrenzen/shp/20260401/VGD_Wien_20260402.zip"
+        },
+        "padded_0_15": [
+          16.03,
+          47.96,
+          16.73,
+          48.48
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "area_km2": 415,
+      "layers": "country_layers",
+      "notes": "Lies wholly inside Lower Austria (AT-3)."
+    }
+  ]
+}

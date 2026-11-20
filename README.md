@@ -2,7 +2,7 @@
 
 Lastbook is an offline survival library for Mac, Windows and Linux. It puts manuals, videos, encyclopedias, an offline map and
 short practical guides on one computer. After setup, it works offline. The desktop sidebar opens Videos, Map and Chat.
-Chat answers questions using the library and links to its sources.
+Chat answers questions using the library, including the offline encyclopedias when they are present, and links to its sources.
 
 Website: <https://lastbook.org>. Contact: hello@lastbook.org.
 
@@ -13,9 +13,9 @@ Website: <https://lastbook.org>. Contact: hello@lastbook.org.
 
 | Platform | Version | Status |
 |---|---|---|
-| macOS (Apple Silicon, macOS 14 or later) | 1.1.12 | Live on lastbook.org, signed and notarized |
-| Windows (64-bit, Windows 10 or later) | 1.1.12 | Live on lastbook.org, Authenticode signed |
-| Linux (Ubuntu 24.04 or 26.04 LTS, x86_64) | 1.1.12 | Ubuntu packages; installation instructions below |
+| macOS (Apple Silicon, macOS 14 or later) | 1.1.13 | Live on lastbook.org, signed and notarized |
+| Windows (64-bit, Windows 10 or later) | 1.1.13 | Live on lastbook.org, Authenticode signed |
+| Linux (Ubuntu 24.04 or 26.04 LTS, x86_64) | 1.1.13 | Ubuntu packages; installation instructions below |
 
 ## iPad (development preview, source only)
 
@@ -27,11 +27,11 @@ A native iPad app (Videos, Map and Chat, offline, with optional on-device AI) is
 ## Install on Linux
 
 The Linux packages target **Ubuntu 24.04 LTS and Ubuntu 26.04 LTS on Intel/AMD x86_64 computers**, one package for each. Download
-[Lastbook for Ubuntu 24.04](https://downloads.lastbook.org/Lastbook_1.1.12_amd64.deb) (or [for Ubuntu 26.04](https://downloads.lastbook.org/Lastbook_1.1.12_ubuntu26.04_amd64.deb)), then install it with apt so Ubuntu resolves its dependencies.
+[Lastbook for Ubuntu 24.04](https://downloads.lastbook.org/Lastbook_1.1.13_amd64.deb) (or [for Ubuntu 26.04](https://downloads.lastbook.org/Lastbook_1.1.13_ubuntu26.04_amd64.deb)), then install it with apt so Ubuntu resolves its dependencies.
 
 ```bash
-sudo apt install ./Lastbook_1.1.12_amd64.deb                  # Ubuntu 24.04
-sudo apt install ./Lastbook_1.1.12_ubuntu26.04_amd64.deb      # Ubuntu 26.04
+sudo apt install ./Lastbook_1.1.13_amd64.deb                  # Ubuntu 24.04
+sudo apt install ./Lastbook_1.1.13_ubuntu26.04_amd64.deb      # Ubuntu 26.04
 ```
 
 Open Lastbook from the application menu. First-run setup downloads your chosen library, state map and optional local AI.
@@ -106,9 +106,23 @@ unzipping a pack from lastbook.org.
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r packaging/requirements_macos.txt     # on Windows: packaging/requirements_app.txt
+.venv/bin/pip install -r packaging/requirements_macos.txt
 .venv/bin/python app/main.py --data /path/to/LastbookData
 ```
+
+On Windows:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\pip install -r packaging/requirements_app.txt
+.venv\Scripts\python app\main.py --data C:\path\to\LastbookData
+```
+
+The Windows window also needs three files from the NuGet package `Microsoft.Web.WebView2` 1.0.3856.49 in
+`app/webview2/`: `lib/net462/Microsoft.Web.WebView2.Core.dll`, `lib/net462/Microsoft.Web.WebView2.WinForms.dll` and
+`runtimes/win-x64/native/WebView2Loader.dll`. A `.nupkg` file is a zip file. Download it from
+https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/1.0.3856.49 and copy the files out. You can check them
+against the hashes in `packaging/build_app_windows.sh`.
 
 On Linux, start it through `packaging/linux/run_source_linux.sh` instead, or videos will not play. The window comes
 from the system (WebKitGTK 4.1 and PyGObject), so make the virtual environment with `--system-site-packages` and install
@@ -206,8 +220,8 @@ bash packaging/linux/build_app_linux.sh
 
 The package uses the system Python and pinned wheels from `packaging/linux/requirements_linux.txt`, built for that Python
 only, so each Ubuntu release gets its own package. On 24.04 (Python 3.12) the app build creates
-`derived/app-build/linux/<timestamp>/Lastbook_1.1.12_amd64.deb`; on 26.04 (Python 3.14) it creates
-`Lastbook_1.1.12_ubuntu26.04_amd64.deb`, with the version `1.1.12+ubuntu26.04`, which apt takes as newer than the 24.04 package.
+`derived/app-build/linux/<timestamp>/Lastbook_1.1.13_amd64.deb`; on 26.04 (Python 3.14) it creates
+`Lastbook_1.1.13_ubuntu26.04_amd64.deb`, with the version `1.1.13+ubuntu26.04`, which apt takes as newer than the 24.04 package.
 It bundles the local AI runner when `derived/llm/bin-linux/lastbook-llm` exists. `packaging/linux/smoke_deb.sh` checks
 the package in a fresh container of the same Ubuntu release.
 Linux integration-test helpers live under `app/tests/linux_*`; set `LASTBOOK_TEST_HOST` to a Windows SSH host with WSL2
@@ -257,7 +271,7 @@ experimental and not an AUR package; test results are in that README.
 ## Tests
 
 ```bash
-python3 -B -m unittest app.tests.test_bridge app.tests.test_setup app.tests.test_data_folder app.tests.test_what_ships app.tests.test_update app.tests.test_address_search app.tests.test_topic_search app.tests.test_chat_steps app.tests.test_validate_topics app.tests.test_libq
+python3 -B -m unittest app.tests.test_bridge app.tests.test_setup app.tests.test_data_folder app.tests.test_what_ships app.tests.test_update app.tests.test_address_search app.tests.test_topic_search app.tests.test_chat_steps app.tests.test_validate_topics app.tests.test_libq app.tests.test_video_transcripts
 ```
 
 `test_bridge` needs a data folder (`LASTBOOK_DATA`); the others run without a library. `packaging/test_pack_tools.py SAMPLE

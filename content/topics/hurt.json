@@ -47,6 +47,9 @@
   "rehydration",
   "ORS",
   "heart attack",
+  "cardiac arrest",
+  "AED",
+  "defibrillator",
   "stroke",
   "seizure",
   "diabetes",
@@ -57,11 +60,19 @@
   "112",
   "111",
   "108",
+  "1122",
+  "115",
   "emergency",
   "poison",
   "swallowed",
   "overdose",
-  "pesticide"
+  "pesticide",
+  "burned",
+  "burnt",
+  "bites",
+  "stings",
+  "snakebite",
+  "rabies"
  ],
  "choices": [
   {
@@ -153,7 +164,7 @@
   {
    "id": "burn",
    "label": "Burn or scald",
-   "hint": "Fire, hot water, cooking oil, chemicals, electricity",
+   "hint": "Burnt or burned by fire, hot water, cooking oil, chemicals, electricity",
    "read": [
     {
      "doc": "med-2e83e22162a9a006",
@@ -178,7 +189,7 @@
   {
    "id": "bone",
    "label": "Broken bone, dislocation or sprain",
-   "hint": "Fall, twisted ankle, limb looks bent or can't be moved",
+   "hint": "Fall, twisted ankle, fractured or dislocated limb, looks bent or can't be moved",
    "read": [
     {
      "doc": "med-443ae5cfaa6ecc68",
@@ -209,7 +220,8 @@
   {
    "id": "breathing",
    "label": "Not breathing, unconscious or choking",
-   "hint": "Collapsed or fainted, not responding, can't breathe, gasping, food stuck in throat, drowning",
+   "hint": "Collapsed or fainted, not responding, heart stopped (cardiac arrest), AED or defibrillator, can't breathe, gasping, food stuck in throat, drowning",
+   "urgent": ["not breathing", "stopped breathing", "isn't breathing", "isnt breathing", "unconscious"],
    "read": [
     {
      "doc": "med-2e83e22162a9a006",
@@ -258,7 +270,7 @@
   {
    "id": "head",
    "label": "Head, neck or back injury",
-   "hint": "Fall, car crash, blow to the head, confused or numb after an accident",
+   "hint": "Fall, car crash, blow to the head, spinal or vertebral injury, fractured skull, spine or vertebrae, dislocated neck, confused or numb after an accident",
    "read": [
     {
      "doc": "med-443ae5cfaa6ecc68",
@@ -289,7 +301,7 @@
   {
    "id": "heatcold",
    "label": "Too hot or too cold (heat stroke, hypothermia, frostbite)",
-   "hint": "Heat wave, no AC, confused and hot, shivering, frostnip, numb white fingers",
+   "hint": "Heatstroke or heat wave, no AC, confused and hot, shivering, frostnip, numb white fingers",
    "read": [
     {
      "doc": "med-2e83e22162a9a006",
@@ -320,7 +332,7 @@
   {
    "id": "allergy",
    "label": "Severe allergic reaction",
-   "hint": "Swollen lips or throat, trouble breathing, hives after a sting, food or medicine",
+   "hint": "Swollen lips or throat, trouble breathing or can't breathe, hives after a sting, food or medicine",
    "read": [
     {
      "doc": "med-443ae5cfaa6ecc68",
@@ -337,9 +349,72 @@
    ]
   },
   {
+   "id": "snakebite",
+   "label": "Snakebite",
+   "hint": "Bitten by a snake, rattlesnake, fang marks, venomous or harmless",
+   "read": [
+    {
+     "doc": "med-2e83e22162a9a006",
+     "page": 340,
+     "label": "IFRC: keep the person as still as possible",
+     "note": "IFRC 2025 key action and steps: a sling for an arm, no walking on a bitten leg, the bite at or below heart level, and removing jewellery before it swells."
+    },
+    {
+     "doc": "med-2e83e22162a9a006",
+     "page": 342,
+     "label": "No tourniquet, sucking, cold compress, rubbing or cutting",
+     "note": "IFRC 2025 caution: these may cause further harm. Also washing the wound and carrying the person when help is far away, and telling medical staff the type of snake."
+    }
+   ]
+  },
+  {
+   "id": "animal-bite",
+   "label": "Animal or human bite",
+   "hint": "Dog, cat, bat or monkey bite, bitten by a person, rabies worry",
+   "read": [
+    {
+     "doc": "med-2e83e22162a9a006",
+     "page": 323,
+     "label": "IFRC: rinse the bite with clean water",
+     "note": "IFRC 2025 key action: cleaning the bite as quickly as possible with clean water and soap, why bites get infected, and the risk of rabies."
+    },
+    {
+     "doc": "med-2e83e22162a9a006",
+     "page": 324,
+     "label": "When to get medical care after a bite",
+     "note": "IFRC 2025: stopping any bleeding first, and getting care if the wound needs closing, for tetanus, for a wild animal bite where rabies is common, or signs of infection."
+    }
+   ]
+  },
+  {
+   "id": "sting",
+   "label": "Insect sting, tick, spider or jellyfish",
+   "hint": "Bee or wasp sting, ticks, mosquito or spider bite, scorpion, jellyfish or stinging fish",
+   "read": [
+    {
+     "doc": "med-2e83e22162a9a006",
+     "page": 328,
+     "label": "IFRC: removing a tick or a bee stinger",
+     "note": "IFRC 2025 steps: a tick pulled out with tweezers close to the skin, a stinger scraped out with a flat object such as a bank card, then cleaning and cooling the area."
+    },
+    {
+     "doc": "med-2e83e22162a9a006",
+     "page": 334,
+     "label": "Jellyfish and stinging fish",
+     "note": "IFRC 2025: rinsing with seawater, heated water for pain, removing stinging cells and tentacles without getting stung, and not rubbing."
+    },
+    {
+     "doc": "med-443ae5cfaa6ecc68",
+     "page": 54,
+     "label": "Spider bites and scorpion stings",
+     "note": "Hesperian: most spider bites and scorpion stings do not cause serious or lasting harm, keeping the part still, cold for pain, and signs that need medical help."
+    }
+   ]
+  },
+  {
    "id": "poison",
    "label": "Poisoning: swallowed a chemical, medicine or pesticide",
-   "hint": "Cleaning product, too many pills (overdose), fuel, button battery, a child got into something",
+   "hint": "Poisoned by a cleaning product, too many pills (overdose), fuel, button battery, a child got into something",
    "read": [
     {
      "doc": "med-2e83e22162a9a006",
@@ -358,7 +433,7 @@
   {
    "id": "diarrhea",
    "label": "Diarrhea, vomiting or dehydration",
-   "hint": "Stomach bug, loose motions, bad water, baby or older person drying out",
+   "hint": "Diarrhoea, throwing up, stomach bug, loose motions, bad water, baby or older person dehydrated or drying out",
    "read": [
     {
      "doc": "med-8bd4770a63b99cc6",
@@ -389,7 +464,7 @@
   {
    "id": "sudden",
    "label": "Chest pain, stroke signs, seizure or diabetic emergency",
-   "hint": "Crushing chest pain, face drooping, fit or convulsion, diabetic acting confused",
+   "hint": "Crushing chest pain or heart attack, face drooping, fit or convulsion, diabetic acting confused",
    "read": [
     {
      "doc": "med-443ae5cfaa6ecc68",
@@ -450,6 +525,21 @@
   }
  ],
  "limits": [
+  {
+   "text": "Do not apply a tourniquet, suck out the venom, apply a cold compress, rub the bite or cut the wound after a snakebite; these may cause further harm.",
+   "doc": "med-2e83e22162a9a006",
+   "page": 342
+  },
+  {
+   "text": "Get emergency help at once if someone is bitten or stung in the mouth or on the throat; any swelling could block their airway.",
+   "doc": "med-2e83e22162a9a006",
+   "page": 328
+  },
+  {
+   "text": "Rabies is deadly once signs appear. After a monkey, bat or raccoon bite, or a bite from a dog or another animal that could have rabies, get medical care right away to decide on rabies vaccination.",
+   "doc": "med-443ae5cfaa6ecc68",
+   "page": 17
+  },
   {
    "text": "If someone has heavy blood loss, cannot be woken, has great difficulty breathing, cannot drink for a day or more, or other listed danger signs, they are probably too sick to treat at home; seek skilled medical help as soon as possible.",
    "doc": "clinical-fe3d008bfe1dd1a2",

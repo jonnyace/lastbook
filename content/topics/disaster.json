@@ -2,8 +2,8 @@
  "id": "disaster",
  "mode": "now",
  "title": "Stay safe in an earthquake, storm, fire, flood or tsunami",
- "short": "Earthquake, tsunami, hurricane, tornado, thunderstorm, wildfire, home and high-rise fire, flood, shelter-in-place",
- "intro": "What official guides say to do during and right after an earthquake, tsunami warning, hurricane, tornado or thunderstorm, wildfire or wildfire smoke, home or high-rise fire, flood, or chemical or radiation emergency, and how to plan an evacuation without a car — and how to get a go-bag and family plan ready beforehand.",
+ "short": "Earthquake, tsunami, hurricane, tornado, thunderstorm, wildfire, home and high-rise fire, flood, nuclear explosion, bombing, shelter-in-place",
+ "intro": "What official guides say to do during and right after an earthquake, tsunami warning, hurricane, tornado or thunderstorm, wildfire or wildfire smoke, home or high-rise fire, flood, nuclear explosion, bombing, or chemical or radiation emergency, and how to plan an evacuation without a car — and how to get a go-bag and family plan ready beforehand.",
  "keywords": [
   "earthquake",
   "drop cover hold on",
@@ -36,7 +36,12 @@
   "shelter in place",
   "radiation",
   "nuclear",
+  "nuke",
+  "missiles",
   "fallout",
+  "bombing",
+  "explosions",
+  "dirty bomb",
   "go bag",
   "kit",
   "family plan",
@@ -177,7 +182,7 @@
   {
    "id": "home-fire",
    "label": "Fire in the home",
-   "hint": "Smoke alarm going off, fire or smoke inside",
+   "hint": "Smoke alarm going off, house fire, fire or smoke inside",
    "read": [
     {
      "doc": "255b448d041a65",
@@ -359,9 +364,65 @@
    ]
   },
   {
+   "id": "explosion",
+   "label": "An explosion or bombing nearby",
+   "hint": "Bombs, blasts, explosions, dirty bomb, unattended package",
+   "read": [
+    {
+     "doc": "ed5bac0a81b009",
+     "page": 237,
+     "label": "CERT: blast injuries and second attacks",
+     "note": "CERT 2019 manual, written for trained volunteers: the injuries explosions cause, and why to move away from danger because a second attack may target people helping."
+    },
+    {
+     "doc": "ed5bac0a81b009",
+     "page": 238,
+     "label": "Fires, gas and other dangers after a bomb",
+     "note": "CERT 2019 manual: secondary explosions, toxic smoke, broken gas lines and water mains, and the zones responders set up around the scene."
+    },
+    {
+     "doc": "ed5bac0a81b009",
+     "page": 240,
+     "label": "Unattended packages: don't touch, move away, report",
+     "note": "CERT 2019 manual: signs of a possible attack, such as unusual vapor clouds or out-of-place packages, boxes or vehicles, and what to do if you see one."
+    },
+    {
+     "doc": "e02dc81261aae7",
+     "page": 363,
+     "label": "What a dirty bomb is",
+     "note": "Emergency Response Guidebook 2024, written for first responders: in a dirty bomb the main hazard is the explosion, and radiation cannot be detected without special equipment."
+    }
+   ]
+  },
+  {
+   "id": "nuclear-explosion",
+   "label": "Nuclear explosion or fallout",
+   "hint": "Nuclear war or bombs, nukes, missile warning, incoming missiles, fallout",
+   "read": [
+    {
+     "doc": "d0fbb2e051cd46",
+     "page": 20,
+     "label": "FEMA: get inside, stay inside, stay tuned",
+     "note": "FEMA 2024 sheet: the flash, blast, heat and fallout of a nuclear explosion, why fallout often takes more than 15 minutes to arrive, and staying inside for 24 hours."
+    },
+    {
+     "doc": "d0fbb2e051cd46",
+     "page": 21,
+     "label": "FEMA: if you are outdoors or in a car when it happens",
+     "note": "FEMA 2024 sheet: taking cover and lying face down, getting inside before fallout arrives, removing outer clothing and washing, and which food and drink is safe."
+    },
+    {
+     "doc": "9681a68ebd07f5",
+     "page": 77,
+     "label": "CERT: where in a building to shelter from fallout",
+     "note": "CERT 2019 annex: brick or concrete buildings, the basement or middle away from outer walls and the roof, families staying where they are, and radios that may still work."
+    }
+   ]
+  },
+  {
    "id": "shelter-in-place",
    "label": "Chemical or radiation emergency — told to shelter",
-   "hint": "Shelter-in-place order, chemical release, nuclear incident",
+   "hint": "Shelter-in-place order, chemical release, nuclear power plant incident",
    "read": [
     {
      "doc": "ed5bac0a81b009",
@@ -484,6 +545,21 @@
    "text": "Outdoor areas, vehicles and mobile homes do NOT provide adequate shelter from nuclear fallout.",
    "doc": "d0fbb2e051cd46",
    "page": 21
+  },
+  {
+   "text": "After a nuclear explosion, stay inside for 24 hours unless local authorities give other instructions; family members should stay where they are and reunite later.",
+   "doc": "d0fbb2e051cd46",
+   "page": 20
+  },
+  {
+   "text": "Attacks with explosives may include a second wave aimed at people helping the injured; move away from danger as soon as you can.",
+   "doc": "ed5bac0a81b009",
+   "page": 237
+  },
+  {
+   "text": "Do not touch an out-of-place, unattended package, box or vehicle; move away and report it to authorities immediately.",
+   "doc": "ed5bac0a81b009",
+   "page": 240
   },
   {
    "text": "In a high-rise fire, use the stairs; do not use the elevator unless the fire department tells you to.",

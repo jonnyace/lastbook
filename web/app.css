@@ -441,8 +441,8 @@ p{margin:.45em 0}
 .limits h2 svg{width:22px;height:22px;flex:none}
 .limits ul{margin:0;padding-left:20px}
 .limits li{margin:8px 0;line-height:1.45;font-size:15.5px}
-.limits .cite{font-size:13.5px;color:var(--ink3)}
-.limits .cite a{color:inherit}
+.limits .lim-src{font-size:13.5px;color:var(--ink3)}
+.limits .lim-src a{color:inherit}
 .limits details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:750;font-size:15px;color:var(--stop)}
 .disagree{margin:16px 0;padding:14px 16px;border-radius:var(--r);background:var(--warn-bg);border:1px solid var(--warn-line);font-size:15.5px}
 .disagree b{color:var(--warn)}
@@ -703,6 +703,44 @@ body.v-ask main{padding-bottom:0}
 .starter:hover{border-color:var(--tc)}
 .starter .ico{flex:none;width:36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--tc) 14%,var(--paper));color:var(--tc);display:grid;place-items:center}
 .starter .ico svg{width:20px;height:20px}
+/* Ask's first screen: a big question, the box to type in, then cards that ask a guide's question and a few learning guides.
+   Nunito (SIL OFL, web/Nunito-OFL.txt) is the website's heading face; it is used here for the big question only. The ink drawings
+   are dark lines on white, so each sits on its own paper tile, which keeps them readable in dark mode too. */
+@font-face{font-family:"Nunito";src:url("/ui/Nunito-Variable.woff2") format("woff2");font-weight:200 1000;font-display:swap}
+:root{--ink-paper:#fbf5e2;--ink-paper-line:#efe4c2}
+@media (prefers-color-scheme:dark){:root{--ink-paper:#f3ead0;--ink-paper-line:#f3ead0}}
+.chat-main.home{max-width:1060px}
+.chat-main.home .chat-log{flex:none;padding:8px 0 0}
+.chat-main.home .composer{position:static;margin-top:0;padding:18px 0 0;background:none;box-shadow:none}
+.chat-main.home .comp-row{min-height:64px;padding:10px 10px 10px 20px;border-radius:18px}
+.chat-main.home .comp-note{display:none}
+.ask-hero{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.ask-hero h1{font:900 clamp(34px,4.6vw,58px)/1.02 "Nunito",var(--display);letter-spacing:-.015em;margin:0;color:var(--ink);text-wrap:balance}
+.ask-hero .lead{margin:12px 0 0;font-size:17px;max-width:30em}
+.ink-art{flex:none;width:clamp(150px,22vw,250px);height:auto;padding:10px 14px;border-radius:22px;background:var(--ink-paper)}
+.ask-safe{display:flex;align-items:center;justify-content:center;gap:7px;margin:12px 0 0;font-size:14.5px;color:var(--ink3)}
+.ask-safe svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ask-h{font:800 22px/1.2 "Nunito",var(--display);margin:30px 0 12px;color:var(--ink)}
+.ask-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.ask-card{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:var(--r);background:var(--paper);border:1px solid var(--line2);box-shadow:var(--shadow);color:var(--ink);text-align:left;font:inherit;cursor:pointer;min-height:84px}
+.ask-card:hover{border-color:var(--tc)}
+.ask-card:focus-visible,.ask-learn a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ink-tile{flex:none;display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:var(--ink-paper);border:1px solid var(--ink-paper-line)}
+.ink-tile img{width:44px;height:44px}
+.ac-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ac-t b{font-size:16px;font-weight:700}
+.ac-t span{font-size:14.5px;line-height:1.35;color:var(--ink2)}
+.ac-go{flex:none;width:20px;height:20px;color:var(--ink3)}
+.ask-card:hover .ac-go{color:var(--tc)}
+.ask-learn-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ask-learn-head a{font-weight:650;color:var(--accent);text-decoration:none}
+.ask-learn{display:grid;grid-template-columns:1fr;gap:12px;padding-bottom:28px}
+.ask-learn{grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr))}
+.ask-learn a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r);text-decoration:none;color:var(--ink);border:1px solid transparent}
+.ask-learn a:hover{border-color:var(--line)}
+.ask-learn b{display:block;font-size:16px}
+.ask-learn small{color:var(--ink3);font-size:14px}
+@media (max-width:639px){.ask-hero .ink-art{display:none}.ask-hero h1{font-size:34px}.ask-h{margin-top:24px}}
 .msg{margin:16px 0}
 .msg.user{display:flex;justify-content:flex-end}
 .msg.user .bubble{max-width:85%;background:var(--accent);color:var(--accent-ink);padding:11px 15px;border-radius:18px 18px 4px 18px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:16.5px}

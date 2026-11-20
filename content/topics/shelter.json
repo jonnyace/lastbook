@@ -42,6 +42,7 @@
   "smoke",
   "air quality",
   "AQHI",
+  "smog",
   "N95",
   "mask",
   "evacuate",
@@ -180,7 +181,7 @@
   {
    "id": "smoke",
    "label": "Wildfire smoke or bad air outside",
-   "hint": "Smoky sky, ash falling, air quality alert, asthma",
+   "hint": "Smoky sky, smog, ash falling, air quality alert, asthma",
    "read": [
     {
      "doc": "a90ff7e6f3cf01",

@@ -71,7 +71,8 @@ def snapshot(dest):
         p = Path(rel)
         if p.name in edits['never_ship'] or p.name == '.DS_Store':
             continue
-        allowed = ((len(p.parts) == 2 and p.parts[0] == 'web' and p.suffix in {'.html', '.css', '.js', '.json', '.webmanifest', '.svg', '.png'})
+        # .woff2 and .txt are web's heading font and the licence its OFL requires shipping beside it.
+        allowed = ((len(p.parts) == 2 and p.parts[0] == 'web' and p.suffix in {'.html', '.css', '.js', '.json', '.webmanifest', '.svg', '.png', '.woff2', '.txt'})
                    or rel == 'content/gaps.json'
                    or (len(p.parts) == 3 and p.parts[:2] == ('content', 'topics') and p.suffix == '.json'))
         if not allowed or any(part.startswith('.') for part in p.parts):

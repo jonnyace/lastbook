@@ -15,6 +15,10 @@ Nothing here changes the app, the engine or a build. No code reads the JSON, and
 - **search only**: the fact was seen in a search result from the publisher's site, but the page itself was not opened;
 - **not checked**: the page could not be reached or read; the row says what is missing.
 
+## Additional DPA 2023 research
+
+[PR #140’s companion study](REGIONS-CL-DPA2023.md), its [paired Spanish text](REGIONS-CL-DPA2023.es.md), and [source metadata](regions-cl-dpa2023-proposed.json) add contributor-reported DPA 2023 extents, cross-checks and per-layer provenance. They do not replace the provisional boxes below. In particular, the existing proposal keeps five separate Valparaíso island boxes and Magallanes’s wider −56.60° southern edge; the companion groups the islands into three boxes and reports −56.5378° from DPA 2023. Choosing final build bounds still needs source-geometry checking. Neither proposal is read by the app or ships a map.
+
 ## Why Chile is a useful case
 
 1. **Overture already carries 4,199,023 Chilean addresses** (`CL` in Overture's address theme guide, opened on

@@ -6,6 +6,7 @@ being labels of buttons hidden on purpose. A convenience, not a defense: the Con
 Not done: MathJax pages keep their raw TeX, because typesetting it here needs a new third-party package. An accepted limit: 511 pages in the packs, 490 of them in the statistics handbook.
 """
 import html
+import itertools
 import re
 
 MAX_PAGE = 16 * 1024 * 1024   # a larger page is served as it is, unless taking out its blank spreadsheet rows brings it under this
@@ -330,17 +331,46 @@ def _drawers(data):
     return b''.join(out)
 
 
+_CUE_TIME = re.compile(r'(?:(\d+):)?(\d\d):(\d\d)[.,]\d+[ \t]+-->')
+_VTT_HEADER = re.compile(r'^WEBVTT(?:[ \t]|$)')
+_VTT_NOTE = re.compile(r'^NOTE(?:[ \t]|$)')
+
+
+def caption_blocks(vtt):
+    """Yield (start seconds, payload lines) from timed captions. Identifiers and metadata are not spoken text.
+
+    An empty line ends a block; its timing line follows at most one identifier. Keep numbers inside the payload,
+    including a line containing only digits. Comma timestamps remain accepted for existing subtitle files."""
+    lines = vtt.decode('utf-8-sig', 'replace').splitlines()
+    for number, (nonempty, block) in enumerate(itertools.groupby(lines, key=bool)):
+        if not nonempty:
+            continue
+        block = list(block)
+        if (number == 0 and _VTT_HEADER.match(block[0])) or _VTT_NOTE.match(block[0]):
+            continue
+        timing = 0
+        match = _CUE_TIME.match(block[0])
+        if not match and len(block) > 1 and '-->' not in block[0]:
+            timing = 1
+            match = _CUE_TIME.match(block[1])
+        if match:
+            hours, minutes, seconds = match.groups()
+            start = int(hours or 0) * 3600 + int(minutes) * 60 + int(seconds)
+            yield start, block[timing + 1:]
+
+
 def transcript_text(vtt):
     out, last = [], None
-    for line in vtt.decode('utf-8', 'replace').splitlines():
-        s = line.strip()
-        if not s or s.startswith(('WEBVTT', 'NOTE', 'Kind:', 'Language:')) or '-->' in s or s.isdigit():
-            continue
-        end = s.rfind('>') + 1      # past the last '>' nothing can match, and a line of nothing but '<' would take quadratic time to find that out
-        s = _TAG.sub('', s[:end]) + s[end:]
-        if s != last:
-            out.append(s)
-        last = s
+    for _, lines in caption_blocks(vtt):
+        for line in lines:
+            s = line.strip()
+            if not s:
+                continue
+            end = s.rfind('>') + 1      # past the last '>' nothing can match, and a line of nothing but '<' would take quadratic time to find that out
+            s = _TAG.sub('', s[:end]) + s[end:]
+            if s != last:
+                out.append(s)
+            last = s
     return ' '.join(out)
 
 

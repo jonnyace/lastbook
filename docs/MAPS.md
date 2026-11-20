@@ -115,12 +115,16 @@ issue before any code.
 [REGIONS-ES.md](REGIONS-ES.md) does the same for Spain's 17 autonomous communities and its two autonomous cities.
 [REGIONS-FR.md](REGIONS-FR.md) does the same for France's 18 regions, with figures from a trial build.
 [REGIONS-CL.md](REGIONS-CL.md) does the same for Chile's 16 regions.
+[REGIONS-CL-DPA2023.md](REGIONS-CL-DPA2023.md) adds a DPA 2023 companion study and paired Spanish text for Chile.
 [REGIONS-AE.md](REGIONS-AE.md) does the same for the United Arab Emirates, proposed as one map for all seven emirates.
 [REGIONS-IN.md](REGIONS-IN.md) does the same for India's 28 states and 8 union territories.
 [REGIONS-PK.md](REGIONS-PK.md) does the same for Pakistan's provinces and territories, with Islamabad and Rawalpindi
 as one map.
 [REGIONS-MB.md](REGIONS-MB.md) does the same for the Canadian province of Manitoba.
 [REGIONS-DK.md](REGIONS-DK.md) does the same for Denmark's 5 regions.
+[REGIONS-AT.md](REGIONS-AT.md) does the same for Austria's nine states.
+
+[REGIONS-MX.md](REGIONS-MX.md) does the same for Mexico's 32 states (entidades federativas).
 
 ## Checking a map change
 

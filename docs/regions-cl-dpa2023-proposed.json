@@ -1,0 +1,1207 @@
+{
+  "about": "Proposed region definitions for detailed maps of Chile: 16 regions. A proposal for discussion (docs/REGIONS-CL-DPA2023.md); no code reads this file, and it does not ship. Most sources are national, so they are listed once under country_layers, and each region points there.",
+  "status": "proposal",
+  "checked": "2026-11-17",
+  "codes": {
+    "proposal": "ISO 3166-2:CL codes, CL-AI to CL-VS; CUT region codes 01 to 16 kept alongside, as strings with their leading zero.",
+    "why": "Bare AR, CO and MA already mean Arkansas, Colorado and Massachusetts in STATE_CODES (engine/address_search.py). Chilean sources use CUT codes, not ISO letters.",
+    "verified": "Cross-checked against Natural Earth admin-1 (iso_3166_2); not checked against the ISO site."
+  },
+  "layer_keys": {
+    "terrain": "terrain.sqlite",
+    "water": "water.sqlite",
+    "crops": "crops.sqlite (crop types, or land cover where no crop map exists)",
+    "buildings": "buildings.sqlite",
+    "places": "places.sqlite",
+    "roads": "base map (OSM today); Vialidad roads as rural gap filler",
+    "addresses": "derived/geo/addresses/<code>.sqlite",
+    "pois": "poi rows in national.sqlite",
+    "hazards": "no file today; tsunami and volcano layers would be new"
+  },
+  "licences": {
+    "DPA-2023-terms": {
+      "name": "DPA 2023 metadata conditions (no licence named)",
+      "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+      "attribution": "Legend required: \"Autorizada su circulación por Resolución Nº ... de la Dirección Nacional de Fronteras y Límites del Estado\" (the archive and record disagree: Nº 87 of 2023, Nº 87 of 2019, Nº 50 of 2019).",
+      "share_alike": false,
+      "conditions": "The legend is required under DFL Nº 5 of 1967, DS Nº 566 of 1970 and DFL Nº 83 of 1979. In a separate sentence that cites no law, the metadata adds that publications and products derived from it must likewise be reviewed and validated by DIFROL. No reuse licence stated; datos.gob.cl lists IDE Chile's DPA 2023 download in its cc-by catalogue record categoria-geoespacial-limites-y-fronteras.",
+      "verified": "2026-11-17"
+    },
+    "CC0-1.0": {
+      "name": "Creative Commons Zero 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution": "none required",
+      "share_alike": false,
+      "verified": "2026-11-17 (datos.gob.cl license_id cc-zero)"
+    },
+    "CC-BY": {
+      "name": "Creative Commons Attribution (version not stated in datos.gob.cl's catalogue)",
+      "url": "https://datos.gob.cl/",
+      "attribution": "Credit the publisher.",
+      "share_alike": false,
+      "verified": "2026-11-17"
+    },
+    "CC-BY-4.0": {
+      "name": "Creative Commons Attribution 4.0 International",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Credit the publisher, link the licence, say if changed.",
+      "share_alike": false,
+      "verified": "licence text not reopened"
+    },
+    "CC-BY-SA-4.0": {
+      "name": "INE open data terms (CC BY-SA 4.0 for the site's content)",
+      "url": "https://www.ine.gob.cl/terminos-de-uso-y-licencia-de-datos-abiertos",
+      "attribution": "Credit INE.",
+      "share_alike": true,
+      "verified": "2026-11-17",
+      "conditions": "Which INE map layers this covers is not stated; no layer below is assigned it yet."
+    },
+    "INE-transparency": {
+      "name": "INE permission under the Transparency Law, as relayed by AddressForAll; listed by Overture as CC BY 4.0",
+      "url": "https://docs.overturemaps.org/attribution/",
+      "attribution": "\"INE CHILE\" / \"© Instituto Nacional de Estadísticas\"",
+      "share_alike": false,
+      "verified": "2026-11-17",
+      "conditions": "Not a licence INE published; rests on INE's answer to a Transparency request. AddressForAll's record calls it \"Implied CC-BY\"; OpenAddresses records \"CHILE GOVERMENT TRANSPARENCY LAW\" (sic)."
+    },
+    "INE-uso-publico": {
+      "name": "\"Datos de uso público\" (no named licence)",
+      "url": "https://www.ine.gob.cl/",
+      "attribution": "Credit INE.",
+      "share_alike": false,
+      "verified": "2026-11-17"
+    },
+    "GeoMOP-terms": {
+      "name": "GeoMOP FAQ: free of charge, no named licence",
+      "url": "https://geomop.mop.gob.cl/",
+      "attribution": "Credit the MOP directorate.",
+      "share_alike": false,
+      "verified": "2026-11-17"
+    },
+    "BCN-terms": {
+      "name": "BCN map library: free use with credit",
+      "url": "https://www.bcn.cl/siit/mapas_vectoriales",
+      "attribution": "\"Biblioteca del Congreso Nacional de Chile\"",
+      "share_alike": false,
+      "verified": "2026-11-17"
+    },
+    "ODbL-1.0": {
+      "name": "Open Database License 1.0",
+      "url": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "attribution": "\"© OpenStreetMap contributors\"",
+      "share_alike": true,
+      "verified": "as for the US map"
+    },
+    "CDLA-Permissive-2.0": {
+      "name": "Community Data License Agreement - Permissive, Version 2.0",
+      "url": "https://cdla.dev/permissive-2-0/",
+      "attribution": "None required; the text of the licence must be made available with shared data.",
+      "share_alike": false,
+      "verified": "2026-11-18"
+    },
+    "Copernicus-WorldDEM-30": {
+      "name": "Copernicus WorldDEM-30 licence",
+      "url": "see docs/regions-proposed.json",
+      "attribution": "see docs/regions-proposed.json",
+      "share_alike": false,
+      "verified": "as in docs/regions-proposed.json"
+    },
+    "CC-BY-IGO": {
+      "name": "Creative Commons Attribution for Intergovernmental Organisations",
+      "url": "https://data.humdata.org/dataset/cod-ab-chl",
+      "attribution": "Credit OCHA and its source (BCN).",
+      "share_alike": false,
+      "verified": "2026-11-17"
+    },
+    "Public-domain": {
+      "name": "Natural Earth terms of use (public domain)",
+      "url": "https://www.naturalearthdata.com/about/terms-of-use/",
+      "attribution": "none required",
+      "share_alike": false,
+      "verified": "not reopened"
+    },
+    "none-stated": {
+      "name": "No licence stated",
+      "url": null,
+      "attribution": "n/a",
+      "share_alike": null,
+      "verified": "2026-11-17",
+      "conditions": "Treated as not yet usable until the publisher gives written permission, as in REGIONS-AR.md."
+    },
+    "CC-BY-NC": {
+      "name": "Creative Commons Non-Commercial (datos.gob.cl cc-nc, titled \"Creative Commons Non-Commercial (Any)\"; the portal links BY-NC 2.0)",
+      "url": "https://creativecommons.org/licenses/by-nc/2.0/",
+      "attribution": "Credit the publisher.",
+      "share_alike": false,
+      "conditions": "Non-commercial only.",
+      "verified": "2026-11-17"
+    },
+    "n/a": {
+      "name": "Reference document; no dataset reuse licence asserted",
+      "url": null,
+      "conditions": "This marks an addressing reference, not permission to redistribute a dataset."
+    }
+  },
+  "country_layers": {
+    "terrain": [
+      {
+        "dataset": "Copernicus DEM GLO-30",
+        "publisher": "ESA / Airbus",
+        "url": "see docs/regions-proposed.json",
+        "licence": "Copernicus-WorldDEM-30",
+        "verified": "as in REGIONS.md",
+        "role": "primary"
+      },
+      {
+        "dataset": "DEM Isla de Pascua (4 m) y Juan Fernández (2 m)",
+        "publisher": "IDE Chile catalogue",
+        "url": "https://geoportal.cl/geoportal/catalog/35972/dem-isla-de-pascua-y-juan-fernandez",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "islands"
+      },
+      {
+        "dataset": "DEM ALOS PALSAR 12.5 m, one per region",
+        "publisher": "CIREN",
+        "url": "https://geoportal.cl/geoportal/catalog/35433/dem-alos-palsar-region-de-la-araucania",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "not proposed",
+        "notes": "Reprocessed from the Alaska Satellite Facility product; ASF terms not checked."
+      }
+    ],
+    "water": [
+      {
+        "dataset": "Hidrografía de la región de Arica a la región de Los Lagos (2024 edition), 1:25,000",
+        "publisher": "IDE Chile hydrography working group",
+        "url": "https://geoportal.cl/geoportal/catalog/download/5c781642-c351-3a15-bbb3-1e850ce3e52d",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "service": "https://geoportal.cl/geoserver/Hidrografia/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=Hidrografia:hidrografa&resultType=hits",
+        "feature_count_2021_edition": 122852,
+        "notes": "Stops at Los Lagos: no Aysén or Magallanes."
+      },
+      {
+        "dataset": "Catastro de Lagos",
+        "publisher": "Dirección General de Aguas (DGA)",
+        "url": "https://dga.mop.gob.cl/uploads/sites/13/2024/07/Lagos.zip",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 2067
+      },
+      {
+        "dataset": "Canales CNR",
+        "publisher": "Comisión Nacional de Riego / DOH, MOP",
+        "url": "https://rest-sit.mop.gob.cl/arcgis/rest/services/DOH/Canales_CNR/MapServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "GeoMOP-terms",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 13166
+      },
+      {
+        "dataset": "Catastro de Embalses",
+        "publisher": "Dirección de Obras Hidráulicas (DOH) with DGA, MOP",
+        "url": "https://rest-sit.mop.gob.cl/arcgis/rest/services/DOH/Embalses/MapServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "GeoMOP-terms",
+        "verified": "2026-11-17",
+        "role": "dams",
+        "feature_count": 1370,
+        "notes": "Updated to December 2015; many records lack wall height and size."
+      },
+      {
+        "dataset": "Red hidrográfica and Masas lacustres",
+        "publisher": "Biblioteca del Congreso Nacional (BCN)",
+        "url": "https://www.bcn.cl/siit/mapas_vectoriales",
+        "licence": "BCN-terms",
+        "verified": "2026-11-17",
+        "role": "fallback"
+      },
+      {
+        "dataset": "OpenStreetMap waterways and water areas (Geofabrik Chile extract)",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://download.geofabrik.de/south-america/chile-latest.osm.pbf",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "fallback; primary for Aysén and Magallanes"
+      }
+    ],
+    "crops": [
+      {
+        "dataset": "Catastro Frutícola (PRODUCTORES FRUTÍCOLAS polygons, 2019–2025 by region)",
+        "publisher": "CIREN (IDE Minagri)",
+        "url": "https://esri.ciren.cl/server/rest/services/IDEMINAGRI/CATASTRO_FRUTICOLA/MapServer",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 94731,
+        "notes": "Layers 55–68, 14 regions. Species fields include berries. Polygons carry the property roll number (rolpredi), which a pack should drop.",
+        "count_method": "Sum of returnCountOnly over MapServer layers 55–68."
+      },
+      {
+        "dataset": "Catastro Frutícola CIREN–ODEPA, tabular",
+        "publisher": "ODEPA / CIREN",
+        "url": "https://datos.gob.cl/",
+        "licence": "CC-BY",
+        "verified": "2026-11-17",
+        "role": "not proposed",
+        "notes": "By comuna, no geometry."
+      },
+      {
+        "dataset": "MapBiomas Chile, Collection 2",
+        "publisher": "MapBiomas Chile",
+        "url": "https://chile.mapbiomas.org/terminos-de-uso/",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "fallback",
+        "notes": "GeoTIFF downloads temporarily suspended; orchard and vineyard classes not checked."
+      },
+      {
+        "dataset": "Catastro Vitícola Nacional",
+        "publisher": "SAG",
+        "url": "https://www.sag.cl/",
+        "licence": "none-stated",
+        "verified": "search only",
+        "role": "not proposed",
+        "notes": "Reports only; no geometry found."
+      }
+    ],
+    "buildings": [
+      {
+        "dataset": "Google Open Buildings v3",
+        "publisher": "Google",
+        "url": "https://sites.research.google/gr/open-buildings/",
+        "licence": "CC-BY-4.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "Chile is in the v3 country list; CC BY 4.0 or ODbL at the user's choice; coverage not measured."
+      },
+      {
+        "dataset": "Microsoft Global ML Building Footprints",
+        "publisher": "Microsoft",
+        "url": "https://minedbuildings.z5.web.core.windows.net/global-buildings/dataset-links.csv",
+        "licence": "CDLA-Permissive-2.0",
+        "verified": "2026-11-18",
+        "role": "gap filler",
+        "notes": "330 files for Chile. ODbL applies only if the footprints are taken through Overture's buildings theme."
+      },
+      {
+        "dataset": "OpenStreetMap building heights",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "heights"
+      }
+    ],
+    "places": [
+      {
+        "dataset": "Censo 2017: Ciudades, Pueblos, Aldeas, Caseríos",
+        "publisher": "INE",
+        "url": "https://services5.arcgis.com/hUyD8u3TeZLKPe4T/arcgis/rest/services/Caserios_2017/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "INE-uso-publico",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_counts": {
+          "ciudades": 270,
+          "pueblos": 289,
+          "aldeas": 727,
+          "caserios": 3669
+        }
+      },
+      {
+        "dataset": "Censo 2024: Toponimos_Localidad_CPV24, Entidades_CPV24",
+        "publisher": "INE",
+        "url": "https://services5.arcgis.com/hUyD8u3TeZLKPe4T/arcgis/rest/services/Censo2024_v2/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_counts": {
+          "localidad_points": 9378,
+          "entidades": 28415
+        }
+      },
+      {
+        "dataset": "Topónimos IGM 1:50,000 (sections A–L)",
+        "publisher": "Instituto Geográfico Militar (IGM)",
+        "url": "https://gis.inv.igm.cl/host/rest/services/Hosted/",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 105440,
+        "count_method": "Sum of returnCountOnly over Hosted/<A..L>/FeatureServer/0."
+      },
+      {
+        "dataset": "OpenStreetMap named places",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "primary"
+      }
+    ],
+    "roads": [
+      {
+        "dataset": "OpenStreetMap roads",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "licence": "ODbL-1.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "notes": "As the US base map today."
+      },
+      {
+        "dataset": "Red Vial Chile",
+        "publisher": "Dirección de Vialidad, MOP",
+        "url": "https://rest-sit.mop.gob.cl/arcgis/rest/services/VIALIDAD/Red_Vial_Chile/MapServer/3/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "GeoMOP-terms",
+        "verified": "2026-11-17",
+        "role": "gap filler",
+        "feature_count": 14266,
+        "notes": "Updated to about 2017."
+      }
+    ],
+    "addresses": [
+      {
+        "dataset": "Overture addresses (release 2026-10-21.0), country = CL",
+        "publisher": "Overture Maps Foundation / INE, distributed by AddressForAll (also in OpenAddresses)",
+        "url": "https://docs.overturemaps.org/attribution/",
+        "licence": "INE-transparency",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "rows": 4199023,
+        "rows_with_number_and_street": 3988122,
+        "rows_with_postcode": 0,
+        "comunas": 311,
+        "rows_by_region": {
+          "Metropolitana": 1593107,
+          "Valparaíso": 502056,
+          "Biobío": 401001,
+          "Maule": 269706,
+          "La Araucanía": 223326,
+          "O'Higgins": 211680,
+          "Coquimbo": 198488,
+          "Los Lagos": 181565,
+          "Antofagasta": 141769,
+          "Ñuble": 108341,
+          "Atacama": 87369,
+          "Los Ríos": 83087,
+          "Tarapacá": 64571,
+          "Arica y Parinacota": 54236,
+          "Magallanes": 54006,
+          "Aysén": 24715
+        },
+        "notes": "Counted with DuckDB on 2026-11-17. None on Rapa Nui or Juan Fernández.",
+        "query": "SELECT count(*) FROM read_parquet('s3://overturemaps-us-west-2/release/2026-10-21.0/theme=addresses/type=address/*') WHERE bbox.xmin BETWEEN -76.5 AND -66 AND bbox.ymin BETWEEN -56.5 AND -17 AND country = 'CL' (and the same with NOT inside the box: 0 rows)"
+      },
+      {
+        "dataset": "Maestro de Calles 2018 (MAESTRO_EJES)",
+        "publisher": "INE and IDE Chile street working group",
+        "url": "https://services5.arcgis.com/hUyD8u3TeZLKPe4T/arcgis/rest/services/MAESTRO_CALLES_2018/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "INE-uso-publico",
+        "verified": "2026-11-17",
+        "role": "interpolation complement",
+        "feature_count": 395480,
+        "comunas": 64,
+        "segments_in_metropolitana": 186561,
+        "with_number_range_on_at_least_one_side": 277295,
+        "with_number_range_on_both_sides": 162601,
+        "count_queries": [
+          "INI_IZQ>0 OR INI_DER>0 OR TER_IZQ>0 OR TER_DER>0",
+          "(INI_IZQ>0 OR TER_IZQ>0) AND (INI_DER>0 OR TER_DER>0)",
+          "CUT_COM LIKE '13%'"
+        ]
+      }
+    ],
+    "pois": [
+      {
+        "dataset": "Establecimientos de Salud",
+        "publisher": "Ministerio de Salud (DEIS)",
+        "url": "https://datos.gob.cl/dataset/establecimientos-de-salud-vigentes",
+        "licence": "CC0-1.0",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "rows": 5837,
+        "with_coordinates": 5411,
+        "with_emergency_service": 827
+      },
+      {
+        "dataset": "Farmacias en Chile",
+        "publisher": "Ministerio de Salud",
+        "url": "https://midas.minsal.cl/farmacia_v2/WS/getLocales.php",
+        "licence": "CC-BY",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "rows": 1925,
+        "with_coordinates": 1805,
+        "licence_record": "https://datos.gob.cl/dataset/farmacias-en-chile"
+      },
+      {
+        "dataset": "Servicios_2024: BOMBEROS",
+        "publisher": "SENAPRED",
+        "url": "https://services5.arcgis.com/i7S5PSnIJAUcWvSE/arcgis/rest/services/Servicios_2024/FeatureServer/1/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 1418
+      },
+      {
+        "dataset": "Servicios_2024: CARABINEROS",
+        "publisher": "SENAPRED",
+        "url": "https://services5.arcgis.com/i7S5PSnIJAUcWvSE/arcgis/rest/services/Servicios_2024/FeatureServer/3/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 883
+      },
+      {
+        "dataset": "Directorio Oficial de Establecimientos Educacionales 2026",
+        "publisher": "Ministerio de Educación",
+        "url": "https://datosabiertos.mineduc.cl/directorio-de-establecimientos-educacionales/",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "in_operation": 12004,
+        "with_coordinates": 11966,
+        "notes": "Coordinates are \"reference only\"."
+      },
+      {
+        "dataset": "Estación de Servicio",
+        "publisher": "Ministerio de Energía (source CNE)",
+        "url": "https://ide-energia.minenergia.cl/server/rest/services/IDE_Energia/Visor_IDE_Energ%C3%ADa/MapServer/19/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_count": 1793,
+        "notes": "Catalogue record linking the service says cc-by; the service states none."
+      },
+      {
+        "dataset": "Subestaciones; Línea de Transmisión",
+        "publisher": "Ministerio de Energía / Coordinador Eléctrico Nacional",
+        "url": "https://ide-energia.minenergia.cl/server/rest/services/IDE_Energia/Visor_IDE_Energ%C3%ADa/MapServer/8/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "feature_counts": {
+          "substations": 1217,
+          "transmission_lines": 1128
+        }
+      },
+      {
+        "dataset": "Sistemas de Agua Potable Rural",
+        "publisher": "Ministerio de Obras Públicas",
+        "url": "https://datos.gob.cl/dataset/listado-de-sistemas-de-agua-potable-rural-en-chile",
+        "licence": "CC-BY-NC",
+        "verified": "2026-11-17",
+        "role": "primary",
+        "rows": 2213,
+        "with_coordinates": 2119,
+        "notes": "Data as of December 2020."
+      },
+      {
+        "dataset": "OpenStreetMap: drinking_water 274, water_tap 44, assembly_point 849, aerodrome 385",
+        "publisher": "OpenStreetMap contributors",
+        "url": "https://www.openstreetmap.org/copyright",
+        "licence": "ODbL-1.0",
+        "verified": "counted (Overpass mirror, OSM data of 2026-07-15)",
+        "role": "primary",
+        "query": "[out:json][timeout:170];area[\"ISO3166-1\"=\"CL\"][admin_level=2]->.a;(nwr[\"amenity\"=\"drinking_water\"](area.a););out count; (and the same for each tag)"
+      }
+    ],
+    "hazards": [
+      {
+        "dataset": "Amenaza_por_Tsunami_2024 (meeting points 1,544; evacuation routes 2,842; safety lines 523; areas to evacuate 354)",
+        "publisher": "SENAPRED",
+        "url": "https://services5.arcgis.com/i7S5PSnIJAUcWvSE/arcgis/rest/services/Amenaza_por_Tsunami_2024/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary"
+      },
+      {
+        "dataset": "AMENAZA_VOLCÁNICA_2024 (meeting points 184; routes 260; hazard areas 3,499; active volcanoes 104)",
+        "publisher": "SENAPRED",
+        "url": "https://services5.arcgis.com/i7S5PSnIJAUcWvSE/arcgis/rest/services/AMENAZA_VOLC%C3%81NICA_2024/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "primary"
+      },
+      {
+        "dataset": "Cartas de Inundación por Tsunami (CITSU)",
+        "publisher": "SHOA",
+        "url": "https://www.shoa.cl/php/citsu.php",
+        "licence": null,
+        "verified": "not verified",
+        "role": "not proposed until SHOA confirms",
+        "notes": "Page returned 403. Copies carry conflicting notices: all rights reserved; \"Dato abierto\"; SHOA's 2015 datos.gob.cl entry is CC BY-NC 2.0."
+      },
+      {
+        "dataset": "Ranking de Riesgo Específico de Volcanes Activos de Chile 2023",
+        "publisher": "SERNAGEOMIN",
+        "url": "https://www.sernageomin.cl/wp-content/uploads/2026/04/Ranking-2023_tabloide_20231012.pdf",
+        "licence": "none-stated",
+        "verified": "2026-11-17",
+        "role": "reference",
+        "volcanoes": 87
+      }
+    ]
+  },
+  "addressing": {
+    "postal_code": {
+      "format": "Seven digits: three for the delivery area (usually a comuna), four for one side of a block; xxx0000 for a whole comuna. Written before the comuna.",
+      "example_pattern": "0000000",
+      "source": {
+        "dataset": "UPU addressing sheet: Chile (2017)",
+        "publisher": "Universal Postal Union",
+        "url": "https://www.upu.int/UPU/media/upu/PostalEntitiesFiles/addressingUnit/chlEn.pdf",
+        "licence": "n/a",
+        "verified": "2026-11-17"
+      },
+      "open_dataset": null,
+      "notes": "Correos de Chile offers a look-up page only."
+    },
+    "order": "Street, then number, then apartment/floor/block, then comuna and region (\"Avenida Palena 1084, Depto. 505, 9180794 Estación Central\"). Rural: \"S/N\", \"Km 15\", \"Parcela 31\".",
+    "street_words": [
+      "Avenida",
+      "Av.",
+      "Avda.",
+      "Calle",
+      "Pasaje",
+      "Psje.",
+      "Camino",
+      "Ruta",
+      "Carretera"
+    ],
+    "current_code": [
+      "tools/build_addresses.py selects country = US only; with that changed, the first two letters of the region name (state.upper()[:2]) give DE (Delaware) for 15 regions and ME (Maine) for Metropolitana.",
+      "engine/address_search.py treats a query as an address only when it starts with a number (\"Avenida Palena 1084\", \"S/N\" and \"Parcela 31\" are not), reads postcodes as \\d{5}, knows English street words, and in \"38 B\" takes the B as part of the street.",
+      "The normaliser replaces letters outside a to z with spaces: \"Ñuble\" becomes \"uble\" and \"Peñalolén\" becomes \"pe alol n\"."
+    ]
+  },
+  "regions": [
+    {
+      "code": "CL-AI",
+      "short_code": "CL-AI",
+      "name": "Aysén del General Carlos Ibáñez del Campo",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "11",
+      "area_km2": 106821.01,
+      "bbox": {
+        "west": -75.6779,
+        "south": -49.1588,
+        "east": -71.0913,
+        "north": -43.638,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -75.83,
+          -49.31,
+          -70.94,
+          -43.48
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.49,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers",
+      "notes": "Part of the border with Argentina in the Southern Patagonian Ice Field, along Magallanes and just south of Aysén's southern tip, is undemarcated (BCN: \"Zona sin demarcar\", 3,937 km², extent -73.64, -49.81, -72.87, -49.17). Points across it fall in neither the CL-AI nor the CL-MA polygon of DPA 2023. It lies partly inside the padded CL-AI box."
+    },
+    {
+      "code": "CL-AN",
+      "short_code": "CL-AN",
+      "name": "Antofagasta",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "02",
+      "area_km2": 126143.52,
+      "bbox": {
+        "west": -70.743,
+        "south": -26.0623,
+        "east": -66.9905,
+        "north": -20.9345,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -70.9,
+          -26.22,
+          -66.84,
+          -20.78
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.58,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-AP",
+      "short_code": "CL-AP",
+      "name": "Arica y Parinacota",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "15",
+      "area_km2": 16875.47,
+      "bbox": {
+        "west": -70.3776,
+        "south": -19.2291,
+        "east": -68.9113,
+        "north": -17.4984,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -70.53,
+          -19.38,
+          -68.76,
+          -17.34
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.57,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-AR",
+      "short_code": "CL-AR",
+      "name": "La Araucanía",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "09",
+      "area_km2": 31799.88,
+      "bbox": {
+        "west": -73.5203,
+        "south": -39.6372,
+        "east": -70.8265,
+        "north": -37.5817,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -73.68,
+          -39.79,
+          -70.67,
+          -37.43
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.59,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-AT",
+      "short_code": "CL-AT",
+      "name": "Atacama",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "03",
+      "area_km2": 75685.44,
+      "bbox": {
+        "west": -71.5919,
+        "south": -29.535,
+        "east": -68.2631,
+        "north": -25.2858,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -71.75,
+          -29.69,
+          -68.11,
+          -25.13
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.49,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-BI",
+      "short_code": "CL-BI",
+      "name": "Biobío",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "08",
+      "area_km2": 23990.58,
+      "bbox": {
+        "west": -73.9736,
+        "south": -38.4924,
+        "east": -70.983,
+        "north": -36.4432,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -74.13,
+          -38.65,
+          -70.83,
+          -36.29
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.4,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-CO",
+      "short_code": "CL-CO",
+      "name": "Coquimbo",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "04",
+      "area_km2": 40587.8,
+      "bbox": {
+        "west": -71.7178,
+        "south": -32.2825,
+        "east": -69.8091,
+        "north": -29.0366,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -71.87,
+          -32.44,
+          -69.65,
+          -28.88
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.62,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-LI",
+      "short_code": "CL-LI",
+      "name": "Libertador General Bernardo O'Higgins",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "06",
+      "area_km2": 16351.38,
+      "bbox": {
+        "west": -72.0575,
+        "south": -35.0052,
+        "east": -70.0092,
+        "north": -33.8507,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -72.21,
+          -35.16,
+          -69.85,
+          -33.7
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.68,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-LL",
+      "short_code": "CL-LL",
+      "name": "Los Lagos",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "10",
+      "area_km2": 48370.71,
+      "bbox": {
+        "west": -74.8485,
+        "south": -44.0671,
+        "east": -71.581,
+        "north": -40.2361,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -75.0,
+          -44.22,
+          -71.43,
+          -40.08
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.42,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-LR",
+      "short_code": "CL-LR",
+      "name": "Los Ríos",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "14",
+      "area_km2": 18319.98,
+      "bbox": {
+        "west": -73.7253,
+        "south": -40.6809,
+        "east": -71.5923,
+        "north": -39.2875,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -73.88,
+          -40.84,
+          -71.44,
+          -39.13
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.65,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-MA",
+      "short_code": "CL-MA",
+      "name": "Magallanes y de la Antártica Chilena",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "12",
+      "area_km2": 130540.17,
+      "bbox": {
+        "west": -75.7232,
+        "south": -56.5378,
+        "east": -66.4156,
+        "north": -48.5941,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -75.88,
+          -56.69,
+          -66.26,
+          -48.44
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.24,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers",
+      "notes": "DPA 2023 leaves out the Chilean Antarctic Territory (comuna Antártica, CUT 12202), and so does this box. Includes the Diego Ramírez islands. The undemarcated Southern Patagonian Ice Field zone (BCN \"Zona sin demarcar\", extent -73.64, -49.81, -72.87, -49.17) lies wholly inside the padded box; DPA 2023 assigns it to no region."
+    },
+    {
+      "code": "CL-ML",
+      "short_code": "CL-ML",
+      "name": "Maule",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "07",
+      "area_km2": 30311.18,
+      "bbox": {
+        "west": -72.7857,
+        "south": -36.5438,
+        "east": -70.3117,
+        "north": -34.6844,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -72.94,
+          -36.7,
+          -70.16,
+          -34.53
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.66,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-NB",
+      "short_code": "CL-NB",
+      "name": "Ñuble",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "16",
+      "area_km2": 13089.22,
+      "bbox": {
+        "west": -72.8847,
+        "south": -37.1985,
+        "east": -71.007,
+        "north": -36.0054,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -73.04,
+          -37.35,
+          -70.85,
+          -35.85
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.59,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-RM",
+      "short_code": "CL-RM",
+      "name": "Metropolitana de Santiago",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "13",
+      "area_km2": 15398.38,
+      "bbox": {
+        "west": -71.7155,
+        "south": -34.291,
+        "east": -69.7698,
+        "north": -32.9219,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -71.87,
+          -34.45,
+          -69.61,
+          -32.77
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.56,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-TA",
+      "short_code": "CL-TA",
+      "name": "Tarapacá",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "01",
+      "area_km2": 42318.82,
+      "bbox": {
+        "west": -70.2866,
+        "south": -21.6277,
+        "east": -68.4049,
+        "north": -18.9368,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -70.44,
+          -21.78,
+          -68.25,
+          -18.78
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.72,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box.",
+      "layers": "country_layers"
+    },
+    {
+      "code": "CL-VS",
+      "short_code": "CL-VS",
+      "name": "Valparaíso",
+      "country": "Chile",
+      "country_iso": "CL",
+      "admin_level": "region",
+      "cut_code": "05",
+      "area_km2": 16239.39,
+      "bbox": {
+        "west": -71.8957,
+        "south": -33.9742,
+        "east": -69.9892,
+        "north": -32.0205,
+        "source": {
+          "dataset": "División Política Administrativa 2023 (REGIONES_v1)",
+          "publisher": "SUBDERE, with IGM, DIFROL and INE (IDE Chile DPA working group)",
+          "url": "https://geoportal.cl/geoportal/catalog/36391/division-politica-administrativa-2023",
+          "download": "https://ide.subdere.gov.cl/descargas/SHP/Limite_DPA_03082023.rar",
+          "licence": "DPA-2023-terms",
+          "verified": "2026-11-17",
+          "method": "Extent of every vertex of the region's parts east of 76° W (all of them, except Valparaíso's Pacific islands), read from the shapefile (SIRGAS-Chile, EPSG:5360).",
+          "cross_check": "OCHA COD-AB admin 1 (from BCN, CC BY-IGO): within 0.07° for 15 of 16 regions; CL-MA 0.56° (OCHA lacks the Diego Ramírez islands). Natural Earth 1:10m admin-1 5.1.1: within 0.21° for 12 regions; CL-BI 0.29, CL-AR 0.43 (Isla Mocha misassigned), CL-LL 0.44, CL-MA 0.62."
+        },
+        "padded_0_15": [
+          -72.05,
+          -34.13,
+          -69.83,
+          -31.87
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01° — the same margin map_sets.state uses for US states."
+      },
+      "box_share": 0.42,
+      "box_share_note": "Region area (SUPERFICIE, km²) divided by the area of the unpadded box. For CL-VS the area includes the islands (about 275 km²), so the share is slightly high.",
+      "layers": "country_layers",
+      "extra_boxes": [
+        {
+          "name": "Rapa Nui and Salas y Gómez",
+          "parts": 171,
+          "west": -109.4549,
+          "south": -27.2023,
+          "east": -105.3594,
+          "north": -26.4698,
+          "padded_0_15": [
+            -109.61,
+            -27.36,
+            -105.2,
+            -26.31
+          ]
+        },
+        {
+          "name": "Juan Fernández",
+          "parts": 19,
+          "west": -80.8378,
+          "south": -33.8163,
+          "east": -78.7696,
+          "north": -33.6057,
+          "padded_0_15": [
+            -80.99,
+            -33.97,
+            -78.61,
+            -33.45
+          ]
+        },
+        {
+          "name": "Desventuradas (San Félix, San Ambrosio)",
+          "parts": 11,
+          "west": -80.1214,
+          "south": -26.351,
+          "east": -79.8606,
+          "north": -26.2731,
+          "padded_0_15": [
+            -80.28,
+            -26.51,
+            -79.71,
+            -26.12
+          ]
+        }
+      ],
+      "notes": "The main box is the mainland only. A single box including the islands would span 40 degrees of longitude; whether a region may have several boxes, or Rapa Nui its own map, is undecided."
+    }
+  ],
+  "integration_note": "Companion research from PR140 cd7d26c, not a replacement for regions-cl-proposed.json. Retains contributor-reported DPA2023 extents as an alternative; no geometry recomputed or map delivered."
+}

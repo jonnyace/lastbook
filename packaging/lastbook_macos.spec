@@ -33,7 +33,7 @@ def clean_sysconfig():
 
 datas = files('web', 'web') + files('content', 'content', 'gaps.json') + files('content/topics', 'content/topics', '*.json')
 binaries = []
-hidden = ['server', 'retrieval', 'assistant', 'llm_local', 'engine.paths', 'engine.library', 'engine.saved_pages', 'engine.address_search', 'bridge', 'shell_macos', 'PyObjCTools.AppHelper']
+hidden = ['server', 'retrieval', 'assistant', 'llm_local', 'engine.paths', 'engine.library', 'engine.safe_paths', 'engine.encyclopedias', 'engine.saved_pages', 'engine.address_search', 'engine.page_tables', 'bridge', 'shell_macos', 'PyObjCTools.AppHelper']
 # The optional local AI's runner (packaging/llm/build_llm_macos.sh), in Contents/Frameworks/llm/. The model itself never ships.
 LLM = ROOT / 'derived' / 'llm' / 'bin-mac'
 binaries += [(str(LLM / 'lastbook-llm'), 'llm')]
@@ -64,7 +64,7 @@ pyz = PYZ(a.pure)
 exe = EXE(pyz, a.scripts, [('X utf8', None, 'OPTION')], exclude_binaries=True, name='Lastbook', console=False, argv_emulation=False, target_arch='arm64', codesign_identity=None, entitlements_file=None)
 coll = COLLECT(exe, a.binaries, a.datas, name='Lastbook')
 ICON = Path(SPECPATH) / 'Lastbook.icns'
-app = BUNDLE(coll, name='Lastbook.app', icon=str(ICON) if ICON.exists() else None, bundle_identifier='local.lastbook.desktop', version='1.1.12', info_plist={
+app = BUNDLE(coll, name='Lastbook.app', icon=str(ICON) if ICON.exists() else None, bundle_identifier='local.lastbook.desktop', version='1.1.13', info_plist={
     'CFBundleDisplayName': 'Lastbook',
     'CFBundleName': 'Lastbook',
     'LSApplicationCategoryType': 'public.app-category.reference',

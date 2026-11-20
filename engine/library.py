@@ -26,7 +26,10 @@ PDF_LOCK=threading.Lock()  # PDFium is not thread-safe
 CLIENT_GONE=(BrokenPipeError,ConnectionResetError,ConnectionAbortedError,TimeoutError)
 # The library folders a file may be served from. One may itself be a link to another disk (videos-external).
 SERVED_FOLDERS=('documents','pages','videos','videos-external','transcripts','metadata/videos','courses','collections','assets')
-RESERVED_NAMES={'con','prn','aux','nul'}|{f'{d}{i}' for d in ('com','lpt') for i in range(1,10)}
+try:from engine import safe_paths
+except ImportError:  # run as a script (python3 engine/library.py): the engine folder is on the path, not the project
+ sys.path.insert(0,str(Path(__file__).resolve().parents[1]));from engine import safe_paths
+from engine.safe_paths import RESERVED_NAMES,real_path,parts_below,name_refused,segments_ok  # noqa: E402  (also used as library.segments_ok)
 
 def load_remote_storage():
  """Videos this Mac has moved to other machines. That code stays in the library's own tools and is never packaged."""
@@ -43,28 +46,6 @@ _remote=load_remote_storage()
 remote_records=_remote.records if _remote else (lambda:{})
 serve_remote=_remote.serve if _remote else None
 
-def real_path(path):
- """Where a path really ends up: links and junctions followed and, on Windows, 8.3 short names expanded."""
- real=os.path.realpath(path)
- if os.name=='nt':
-  import ctypes
-  buf=ctypes.create_unicode_buffer(32768);n=ctypes.windll.kernel32.GetLongPathNameW(real,buf,32768)
-  if 0<n<32768:real=buf.value
-  if real.startswith('\\\\?\\') and not real.startswith('\\\\?\\UNC\\'):real=real[4:]
- return real
-
-def parts_below(real,root):
- """The path parts of real below root, or None when real is not inside root."""
- real,root=os.path.normcase(real),os.path.normcase(str(root))
- if real==root:return ()
- prefix=root.rstrip(os.sep)+os.sep
- return tuple(real[len(prefix):].split(os.sep)) if real.startswith(prefix) else None
-
-def name_refused(parts):
- """The file name itself: hidden files, sign-in files, and yt-dlp's .info.json, which can hold request headers."""
- name=parts[-1].lower() if parts else ''
- return name.startswith(('.','video-auth')) or 'cookie' in name or name.endswith('.info.json')
-
 def folder_refused(parts):
  """parts: below the library's top. Hidden folders stay out everywhere. These four names are the library's own working folders;
  inside a served folder they are just names (a course has a page called tools), and what is served is decided by being there."""
@@ -77,20 +58,10 @@ def parts_refused(parts,folders=False):
  """Run on what a path really resolves to: a link can end at "x.info.json:s", which the name check alone would pass."""
  return name_refused(parts) or (folders and folder_refused(parts)) or not segments_ok('/'.join(parts))
 
-def segments_ok(path,windows=os.name=='nt'):
- """NTFS opens "x.", "x " and "x::$DATA" as x, and treats some names as devices; the name checks would not see those."""
- if not windows:return True
- for s in path.split('/'):
-  if s!=s.rstrip('. ') or ':' in s or '\\' in s or s.split('.')[0].lower() in RESERVED_NAMES:return False
- return True
-
 def zim_file(name):
- """The file behind a /zim/<name>/ address, after the same checks as any other file; ValueError if refused."""
- if not name or '\0' in name or Path(name).name!=name or not segments_ok(name):raise ValueError('Invalid collection')
- path=ROOT/'collections'/name
- real=real_path(path);parts=parts_below(real,real_path(ROOT/'collections'))
- if parts is None or parts_refused(parts) or not real.lower().endswith('.zim'):raise ValueError('Invalid collection')
- return path
+ """The file behind a /zim/<name>/ address, after the same checks as any other file; ValueError if refused.
+ engine/safe_paths.py holds the check, so Chat's encyclopedia search and citations refuse exactly what this does."""
+ return safe_paths.zim_file(ROOT,name)
 
 def zim_main_path(arc):
  """main_entry is usually a redirect whose own path ('mainPage') cannot be looked up. Follow it."""
@@ -335,25 +306,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
    self.send_data(json.dumps(result).encode());return
   if url.path=='/api/collection-search':
    try:
-    from libzim.reader import Archive
-    from libzim.search import Searcher,Query
-    params=urllib.parse.parse_qs(url.query);q=params.get('q',[''])[0];hits=[];tried=failed=0
-    for path in (ROOT/'collections').glob('*.zim'):
-     try:zim_file(path.name)
-     except ValueError:continue
-     tried+=1
-     try:
-      with ZIM_LOCK:
-       if path.name not in ZIMS:ZIMS[path.name]=Archive(path)
-       arc=ZIMS[path.name]
-      if not arc.has_fulltext_index:continue
-      result=Searcher(arc).search(Query().set_query(q))
-      for p in result.getResults(0,8):
-       entry=arc.get_entry_by_path(p)
-       hits.append({'title':entry.title,'collection':path.stem,'path':'zim/'+urllib.parse.quote(path.name)+'/'+urllib.parse.quote(p,safe='/')})
-     except Exception as e:  # one damaged file must not cost the answers from the others
-      failed+=1;print(f'collection search skipped {path.name}: {type(e).__name__}',flush=True)
-    if tried and failed==tried:raise ValueError('no collection could be searched')
+    _repo=Path(__file__).resolve().parents[1]
+    if str(_repo) not in sys.path:
+     sys.path.insert(0,str(_repo))
+    from engine import encyclopedias
+    params=urllib.parse.parse_qs(url.query);q=params.get('q',[''])[0]
+    # Same JSON as before: title, collection, path. Text excerpts stay inside Chat, not this UI search.
+    # root=ROOT: this process may have been started with LASTBOOK_LIBRARY, which is
+    # the library-data folder itself. encyclopedias.search defaults to engine.paths.LIB.
+    found=encyclopedias.search(q, read_text=False, excerpt=0, root=ROOT)
+    hits=[{'title':h['title'],'collection':h['collection'],'path':h['path']} for h in found]
     self.send_data(json.dumps(hits).encode())
    except CLIENT_GONE:pass
    except Exception:self.send_data(json.dumps({'error':'Encyclopedia search failed.'}).encode(),status=500)

@@ -74,18 +74,28 @@ fails as `checksum`, and a 200 to a Range goes on over one connection from the h
 
 ## Where things go
 
-- The library folder stays **LastbookData** (layout unchanged: `library-data/`, `derived/`). Default place: the person's
-  Documents folder on Windows, and `~/Library/Application Support/Lastbook/LastbookData` on a Mac, or a folder they choose,
-  on a disk with room. `settings.json` remembers it as before (`app/main.py`).
+- The library folder stays **LastbookData** (layout unchanged: `library-data/`, `derived/`). Default place
+  (`app/main.py` `default_choice`): `%LOCALAPPDATA%\Lastbook\LastbookData` on Windows, or
+  `<system drive>:\Lastbook\LastbookData` when the user folder's path is too long for the library's longest file names;
+  `~/Library/Application Support/Lastbook/LastbookData` on a Mac; `$XDG_DATA_HOME/Lastbook/LastbookData` on Linux
+  (`~/.local/share/Lastbook/LastbookData` when that is not set). Or a folder the person chooses, on a disk with room.
+  `settings.json` remembers it as before (`app/main.py`).
 - Work in progress: `<parent>/LastbookData.setup/`, holding `downloads/` (partial files with a `.part` suffix and a
   `.json` beside each: url, size, sha256, bytes done, ETag, and `"parallel": true` while pieces may lie past bytes done; a resume then keeps only the hashed run, so at most `AHEAD` pieces are fetched again) and `unpack/` (the new LastbookData being built).
 - The model goes to `LastbookData/models/<file>`. After its SHA-256 matches, setup calls `llm_local.mark_checked(path)`, so
   the AI does not read 17 GB a second time.
 - Space needed = download size + unpacked size + 2 GB, on the disk that holds the target. A zip is deleted once it is
   unpacked and checked. Setup refuses to start, with the numbers, when there is not enough room.
-- Manual downloads are recognized: a `Lastbook-*.zip` or the model file in Downloads, Documents or Desktop, or an existing
-  LastbookData anywhere `app/main.py` already looks, offered as *Use the file you already have*. A file is used only after its
-  size and SHA-256 match the manifest.
+- Manual downloads are recognized (`found()` in `engine/setup/api.py`) in these places only, and offered under *Found on
+  this computer* as *Use the file you already have*:
+  - a `Lastbook-*.zip`, or a file named like one in the manifest (pack, model, state map, address index), in the folder
+    that holds LastbookData (the default place above, without `LastbookData`), or in the open library or its `models/`;
+  - a file the person picks with *Choose a library zip or AI model file*;
+  - an existing LastbookData at the remembered place or the default one (`app/main.py` `places`).
+
+  Downloads, Documents and Desktop are not searched. A file is used only after its size and SHA-256 match the manifest.
+- Chat's local AI looks for the model only in the open library's `models/` and the library folder itself, and in
+  `LASTBOOK_MODEL_DIR` when that is set (`llm_local.py` `places`). *Look again* searches those again.
 
 ## Engine interface: `/api/setup/*`
 

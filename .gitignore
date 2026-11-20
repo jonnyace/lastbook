@@ -19,3 +19,4 @@ build/
 *.dmg
 *.exe
 *.zip
+/app/webview2/

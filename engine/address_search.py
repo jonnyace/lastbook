@@ -32,6 +32,8 @@ for number, word in enumerate(ORDINALS):
     suffix = 'th' if 10 <= number % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(number % 10, 'th')
     TO_DIGITS[word] = f'{number}{suffix}'
 TO_WORDS = {value: key for key, value in TO_DIGITS.items()}
+# How a street can end. Three of these are also state codes: Ct (Court, Connecticut), Mt (Mount, Montana), NE (northeast, Nebraska).
+STREET_ENDINGS = set(WORDS.values()) | {'ne', 'nw', 'se', 'sw'}
 
 
 def normalize(text):
@@ -53,7 +55,7 @@ def street_forms(street):
     return list(dict.fromkeys(forms))
 
 
-def _parts(query):
+def _parts(query, states=True):
     number, remainder = query.strip().split(None, 1)
     number = number.upper()
     remainder = re.sub(r'[^a-z0-9 ]+', ' ', remainder.lower()).split()
@@ -66,7 +68,7 @@ def _parts(query):
         postcode = remainder.pop()
     state = ''
     for count in (3, 2, 1):
-        if len(remainder) <= count:
+        if not states or len(remainder) <= count:
             continue
         name = ' '.join(remainder[-count:])
         code = STATES.get(name) or (name.upper() if count == 1 and name.upper() in STATE_CODES else '')
@@ -77,11 +79,33 @@ def _parts(query):
     return number, normalize(' '.join(remainder)).split(), state, postcode
 
 
+def _readings(query):
+    """The ways to read a query, likeliest first, as (number, words, state, postcode, town).
+    Words at the end that name a state can also be the street's own ending ('12 Oak Ct', '500 4th St NE') or a town
+    ('Washington'), so the query is read both ways. The second reading stays narrow, so that a state that is not installed
+    still finds nothing: a two-letter code is tried only as part of the street (town ''), and a state's name only as a town
+    of exactly that name (town 'whole'). '100 Main St IN' does not find Inglewood, nor 'Maple Ave Kansas' Kansas City."""
+    number, words, state, postcode = _parts(query)
+    if not state:
+        return [(number, words, state, postcode, 'starts')]
+    typed = _parts(query, states=False)
+    code = len(typed[1]) == len(words) + 1 and typed[1][-1].upper() in STATE_CODES
+    by_state, as_typed = (number, words, state, postcode, 'starts'), (*typed, '' if code else 'whole')
+    return [as_typed, by_state] if code and typed[1][-1] in STREET_ENDINGS else [by_state, as_typed]
+
+
 def find_addresses(query, geo_directory, limit=8, near=None):
     """Return exact house-number matches from installed indexes, never a guessed house."""
     if not is_address_query(query):
         return []
-    number, words, state, postcode = _parts(query)
+    for reading in _readings(query):
+        found = _lookup(*reading, geo_directory, limit, near)
+        if found:
+            return found
+    return []
+
+
+def _lookup(number, words, state, postcode, town, geo_directory, limit, near):
     if not words:
         return []
     geo_directory = Path(geo_directory)
@@ -98,7 +122,7 @@ def find_addresses(query, geo_directory, limit=8, near=None):
                 connections.append(sqlite3.connect(ro_uri(path), uri=True))
             except sqlite3.Error:
                 continue
-        for count in range(len(words), 0, -1):
+        for count in range(len(words), 0 if town else len(words) - 1, -1):
             street = ' '.join(words[:count])
             if all(word in set(WORDS.values()) for word in words[:count]):
                 continue
@@ -114,8 +138,8 @@ def find_addresses(query, geo_directory, limit=8, near=None):
                     conditions.append('zip = ?')
                     parameters.append(postcode)
                 if city:
-                    conditions.append('lower(city) LIKE ?')
-                    parameters.append(city + '%')
+                    conditions.append('lower(city) = ?' if town == 'whole' else 'lower(city) LIKE ?')
+                    parameters.append(city if town == 'whole' else city + '%')
                 sql = ('SELECT num,street,city,state,zip,lat,lon,norm FROM addr WHERE '
                        + ' AND '.join(conditions) + ' ORDER BY length(norm),norm LIMIT ?')
                 for connection in connections:

@@ -17,6 +17,7 @@ PROGRAM_FILES = (
     'server.py', 'retrieval.py', 'assistant.py', 'llm_local.py',
     'engine/__init__.py', 'engine/paths.py', 'engine/library.py',
     'engine/saved_pages.py', 'engine/address_search.py', 'engine/update.py',
+    'engine/encyclopedias.py', 'engine/safe_paths.py', 'engine/page_tables.py',
     'engine/setup/__init__.py', 'engine/setup/api.py', 'engine/setup/download.py',
     'engine/setup/hardware.py', 'engine/setup/install.py', 'engine/setup/manifest.py',
     'engine/setup/roots.pem',

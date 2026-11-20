@@ -14,6 +14,7 @@ Versions are the pins in `packaging/requirements*.txt`, `packaging/llm/*.sh`, `p
 
 | Component | Version | Licence | Source | Checked |
 |---|---|---|---|---|
+| Nunito (`web/Nunito-Variable.woff2`, the Ask page's headings; the same file as `website-next/fonts/`), copied into the app with `web/` | variable, as in `website-next/fonts/` | SIL Open Font License 1.1 | https://github.com/googlefonts/nunito | Checked: `web/Nunito-OFL.txt` |
 | pypdfium2 (`engine/vendor-macos/` on Mac; installed from PyPI for the Windows build) | 5.14.0 | Apache-2.0 or BSD-3-Clause; data files CC-BY-4.0 | https://github.com/pypdfium2-team/pypdfium2 | Checked: `pypdfium2-5.14.0.dist-info/licenses/` |
 | PDFium, inside pypdfium2's `libpdfium.dylib` | as built by pdfium-binaries | BSD-3-Clause (The PDFium Authors) | https://pdfium.googlesource.com/pdfium, https://github.com/bblanchon/pdfium-binaries | Checked: `BUILD_LICENSES/pdfium.txt`, `pdfium-binaries.txt` |
 | Libraries built into PDFium: abseil, agg 2.3, fast_float, FreeType, ICU, Little CMS, libjpeg-turbo, OpenJPEG, libpng, LLVM libc, simdutf, zlib | as built | Each under its own licence (Apache-2.0, BSD-style, FreeType/FTL, Unicode, MIT, IJG, zlib and others) | see each file | Checked: the full texts are in `engine/vendor-macos/pypdfium2-5.14.0.dist-info/licenses/data/darwin_arm64/BUILD_LICENSES/` |

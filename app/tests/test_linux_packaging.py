@@ -3,6 +3,7 @@
 Runs the real stager/scanner and dpkg-deb on a tiny fixture payload. The ELF
 fixture is not lastbooksrc; these checks do not prove a working app or package.
 """
+import ast
 import importlib.util
 import json
 import os
@@ -109,7 +110,8 @@ class LinuxPackaging(unittest.TestCase):
         source, ship, vendor = (self.base / name for name in ('source', 'ship', 'vendor'))
         for rel in ('app/main.py', 'app/bridge.py', 'app/shell_linux.py', 'server.py', 'retrieval.py', 'assistant.py', 'llm_local.py',
                     'engine/__init__.py', 'engine/paths.py', 'engine/library.py', 'engine/saved_pages.py',
-                    'engine/address_search.py', 'engine/update.py', 'engine/setup/__init__.py', 'engine/setup/api.py',
+                    'engine/address_search.py', 'engine/update.py', 'engine/encyclopedias.py',
+                    'engine/safe_paths.py', 'engine/page_tables.py', 'engine/setup/__init__.py', 'engine/setup/api.py',
                     'engine/setup/download.py', 'engine/setup/hardware.py', 'engine/setup/install.py', 'engine/setup/manifest.py'):
             write(source, rel, '# Synthetic staging fixture\n')
         write(source, 'engine/setup/roots.pem', 'synthetic certificate fixture')
@@ -241,6 +243,42 @@ class LinuxPackaging(unittest.TestCase):
         write(wheels, 'unexpected.tar.gz', 'not a wheel')
         with self.assertRaisesRegex(ValueError, 'wheel'):
             module.wheel_lock(wheels)
+
+    def load(self, rel):
+        spec = importlib.util.spec_from_file_location(Path(rel).stem, LINUX / rel)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_program_list_covers_every_module_the_shipped_code_imports(self):
+        """A list that drops a module the app imports at load time ships a package that cannot start."""
+        shipped = set(self.load('stage_linux.py').PROGRAM_FILES)
+        missing = set()
+        for rel in sorted(shipped):
+            if not rel.endswith('.py'):
+                continue
+            for node in ast.parse((ROOT / rel).read_text(encoding='utf-8')).body:
+                names = []
+                if isinstance(node, ast.ImportFrom) and node.module:
+                    base = node.module.replace('.', '/')
+                    names = [base, *(f'{base}/{a.name}' for a in node.names if a.name != '*')]
+                elif isinstance(node, ast.Import):
+                    names = [a.name.replace('.', '/') for a in node.names]
+                for name in names:
+                    found = {c for c in (f'{name}.py', f'{name}/__init__.py') if (ROOT / c).is_file()}
+                    if found and not found & shipped:
+                        missing |= found
+        self.assertEqual(missing, set(), 'not in PROGRAM_FILES (packaging/linux/stage_linux.py)')
+
+    def test_arch_snapshot_ships_the_web_assets_the_checkout_tracks(self):
+        """The snapshot refuses an asset it does not recognise, so the font and its licence must be allowed."""
+        module = self.load('arch/build_arch.py')
+        dest = self.base / 'snapshot'
+        module.snapshot(dest)          # raises on a tracked web/content asset it did not expect
+        for rel in ('web/index.html', 'web/Nunito-Variable.woff2', 'web/Nunito-OFL.txt'):
+            with self.subTest(asset=rel):
+                self.assertTrue((dest / rel).is_file())
+        self.assertEqual((dest / 'web/Nunito-OFL.txt').read_bytes(), (ROOT / 'web/Nunito-OFL.txt').read_bytes())
 
 
 if __name__ == '__main__':

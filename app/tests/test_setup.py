@@ -2242,6 +2242,47 @@ class Recommend(Base):
         s._llm = types.SimpleNamespace(runner_path=lambda: Path('/opt/lastbook/llm/lastbook-llm'))
         self.assertTrue(s.ai_fit(self.hw(64 * 2 ** 30, 10 ** 12))['fits'])
 
+    def test_judge_counts_apple_silicon_linux_as_unified(self):
+        """On Apple silicon running Linux the graphics share the one memory, as on a Mac: judge() must count the model part
+        llama.cpp places on the device against the computer's memory, not only the host part plus the mapped file."""
+        import llm_local
+        GiB = 2 ** 30
+        fit = {'status': 'fits', 'ram_total': 20 * GiB, 'device_bytes': 6 * GiB, 'host_bytes': 11 * GiB,
+               'memory': [{'kind': 'device', 'name': 'Apple', 'model': 6 * GiB, 'context': 2 * GiB, 'compute': GiB, 'free': 20 * GiB}]}
+        # 6 + 11 GiB fits a 20 GiB unified pool; split, the host must carry 11 + the 10.8 GiB mapped rest, and it does not fit
+        detect = getattr(llm_local, '_apple_silicon_linux', None) or (lambda *a, **k: False)
+        tree = Path(self.parent) / 'device-tree'
+        tree.mkdir(parents=True)
+        (tree / 'compatible').write_bytes(b'apple,j293\0apple,arm\0')
+        (tree / 'model').write_bytes(b'Apple MacBook Pro\0')
+        with mock.patch.object(llm_local.sys, 'platform', 'linux'), \
+             mock.patch('platform.machine', return_value='aarch64'), \
+             mock.patch.object(llm_local, '_apple_silicon_linux', lambda: detect(str(tree)), create=True):
+            self.assertTrue(llm_local.judge(dict(fit))['fits'])
+        (tree / 'compatible').unlink()
+        with mock.patch.object(llm_local.sys, 'platform', 'linux'), \
+             mock.patch('platform.machine', return_value='aarch64'), \
+             mock.patch.object(llm_local, '_apple_silicon_linux', lambda: detect(str(tree)), create=True):
+            self.assertFalse(llm_local.judge(dict(fit))['fits'])          # no device tree, so not unified
+
+    def test_apple_silicon_linux_shares_the_setup_check(self):
+        """The runner's check delegates to engine/setup/hardware.py's own device-tree reader, with a local fallback if the
+        engine cannot be imported."""
+        import llm_local
+        import platform as platform_mod
+        tree = Path(self.parent) / 'device-tree-share'
+        tree.mkdir(parents=True)
+        (tree / 'compatible').write_bytes(b'apple,t8103\0apple,arm\0')
+        (tree / 'model').write_bytes(b'Apple MacBook Pro\0')
+        with mock.patch('platform.machine', return_value='aarch64'):
+            self.assertTrue(llm_local._apple_silicon_linux(str(tree)))
+        (tree / 'compatible').write_bytes(b'raspberrypi,5-model-b\0broadcom,bcm2712\0')
+        with mock.patch('platform.machine', return_value='aarch64'):
+            self.assertFalse(llm_local._apple_silicon_linux(str(tree)))
+        with mock.patch('platform.machine', return_value='x86_64'):
+            self.assertFalse(llm_local._apple_silicon_linux(str(tree)))
+        (tree / 'compatible').unlink()
+
     def test_pack_and_ai_by_space(self):
         s = self.setup()
         with mock.patch.object(hardware, 'disk_of', lambda p: (10 ** 12, 2 * 10 ** 12)):
@@ -2304,6 +2345,14 @@ class Recommend(Base):
 class Hardware(unittest.TestCase):
     """Real host detection needs no setup download server or test pack."""
 
+    def setUp(self):
+        # main's #112 tests here read self.parent and self.tmp, which their class used to provide.
+        self.tmp = shorttemp.mkdtemp('lastbook-hardware-')
+        self.parent = self.tmp / 'place'
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
     def test_hardware_here(self):
         scratch = ROOT / 'derived/app-build'
         scratch.mkdir(parents=True, exist_ok=True)
@@ -2320,6 +2369,38 @@ class Hardware(unittest.TestCase):
                 fs = os.statvfs(parent)
                 self.assertEqual(hw['disks'][0]['total_bytes'], fs.f_blocks * fs.f_frsize)
                 self.assertIn(hw['ai_runtime'], ('cpu', 'cuda', 'vulkan'))
+
+    def test_mac_free_is_what_finder_calls_available(self):
+        """#112: the plain free count leaves out the room macOS makes on its own (purgeable caches, local snapshots)."""
+        plain = mock.Mock(total=500 * 10 ** 9, free=17 * 10 ** 9)
+        with mock.patch.object(hardware.shutil, 'disk_usage', return_value=plain):
+            for platform, mac, free in (('darwin', 140 * 10 ** 9, 140 * 10 ** 9),     # Finder's figure, when macOS gives one
+                                        ('darwin', None, 17 * 10 ** 9),               # it cannot say: the plain count
+                                        ('darwin', 5 * 10 ** 9, 17 * 10 ** 9),        # never less than the plain count
+                                        ('win32', 140 * 10 ** 9, 17 * 10 ** 9)):      # only a Mac asks
+                with self.subTest(platform=platform, mac=mac), mock.patch.object(sys, 'platform', platform), \
+                        mock.patch.object(hardware, '_mac_available', return_value=mac, create=True) as asked:
+                    self.assertEqual(hardware.disk_of(self.parent), (free, 500 * 10 ** 9))
+                    self.assertEqual(asked.called, platform == 'darwin')
+
+    @unittest.skipUnless(sys.platform == 'darwin' and importlib.util.find_spec('Foundation'), 'needs a Mac with PyObjC')
+    def test_mac_available_here(self):
+        """The real call: macOS answers, and its figure is never below the plain free count by more than a moment's writes."""
+        n = hardware._mac_available(self.tmp)
+        self.assertIsNotNone(n)
+        self.assertGreater(n, shutil.disk_usage(self.tmp).free - 10 ** 9)
+        self.assertGreaterEqual(hardware.disk_of(self.tmp / 'not yet')[0], shutil.disk_usage(self.tmp).free - 10 ** 9)
+
+    def test_too_little_memory_says_the_whole_need(self):
+        """#112: "needs about 14.9 GB ... and this computer has 17.2 GB" read as a fit. Say the total, then what it is made of."""
+        import llm_local
+        fit = {'status': 'fits', 'ram_total': 16 * 2 ** 30, 'device_bytes': int(14.9e9), 'host_bytes': 0, 'memory': []}
+        with mock.patch.object(sys, 'platform', 'darwin'):
+            j = llm_local.judge(fit)
+        self.assertFalse(j['fits'])
+        self.assertEqual(j['why'], 'The local AI needs about 17.6 GB of memory: 14.9 GB for the model and 2.7 GB for everything else. '
+                                   'This computer has 17.2 GB.')
+        self.assertGreater(j['needs'], fit['ram_total'])
 
 
 class Through(Base):

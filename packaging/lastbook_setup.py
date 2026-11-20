@@ -21,7 +21,7 @@ import winreg
 import zipfile
 from pathlib import Path
 
-VERSION = '1.1.12'
+VERSION = '1.1.13'
 NAME = 'Lastbook'
 APP_EXE = 'Lastbook.exe'
 UNINSTALLER = 'Uninstall Lastbook.exe'

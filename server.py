@@ -41,7 +41,7 @@ if _BUNDLED.is_dir() and str(_BUNDLED) not in sys.path:
 
 import engine.paths as lastbook_paths  # noqa: E402  (data folder and program folder can differ in the packaged app)
 from engine.paths import ro_uri  # noqa: E402
-from engine import saved_pages, address_search  # noqa: E402
+from engine import saved_pages, address_search, encyclopedias  # noqa: E402
 from engine.setup import api as setup_api  # noqa: E402  (the one module that may download: only when the person asks)
 HERE = lastbook_paths.DATA  # holds derived/
 APP = lastbook_paths.APP  # holds web/ and content/
@@ -208,11 +208,9 @@ def topics():
 
 
 def zim_names():
-    """The encyclopedia files this library really holds. Its folder decides, so one rule covers every size of pack."""
-    try:
-        return sorted(p.name for p in (LIB / 'collections').glob('*.zim'))
-    except OSError:
-        return []
+    """The encyclopedia files this library really holds. Its folder decides, so one rule covers every size of pack.
+    Only files the /zim/ reader would open (engine/safe_paths.py): a link out of collections/ is not offered or cited."""
+    return encyclopedias.list_files(LIB)
 
 
 def item_here(i, zims):
@@ -649,18 +647,14 @@ def render_page(r, n, width):
 
 
 def vtt_cues(path):
-    cues, cur = [], None
-    for line in (LIB / path).read_text(encoding='utf-8', errors='replace').splitlines():
-        m = re.match(r'(\d+):(\d\d):(\d\d)[.,](\d+)\s+-->', line) or re.match(r'(\d\d):(\d\d)[.,](\d+)\s+-->', line)
-        if m:
-            g = m.groups()
-            t = int(g[0]) * 3600 + int(g[1]) * 60 + int(g[2]) if len(g) == 4 else int(g[0]) * 60 + int(g[1])
-            cur = {'t': t, 'text': ''}
-            cues.append(cur)
-        elif cur is not None and line.strip() and not line.strip().isdigit():
+    cues = []
+    for t, lines in saved_pages.caption_blocks((LIB / path).read_bytes()):
+        cur = {'t': t, 'text': ''}
+        for line in lines:
             txt = html.unescape(re.sub(r'<[^>]+>', '', line)).strip()
             if txt and not cur['text'].endswith(txt):
                 cur['text'] = (cur['text'] + ' ' + txt).strip()
+        cues.append(cur)
     # auto captions repeat lines across cues; drop repeats and merge into ~sentence chunks
     out, last = [], ''
     for c in cues:
@@ -1664,7 +1658,7 @@ class Handler(library.Handler):
     def send_static(self, path):
         data = path.read_bytes()
         mime = {'.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml',
-                '.json': 'application/manifest+json', '.png': 'image/png', '.webmanifest': 'application/manifest+json'}.get(path.suffix, 'application/octet-stream')
+                '.json': 'application/manifest+json', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8'}.get(path.suffix, 'application/octet-stream')
         self.send_response(200)
         self.send_header('Content-Type', mime)
         self.send_header('Content-Length', str(len(data)))

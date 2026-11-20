@@ -1,0 +1,1222 @@
+{
+  "about": "Proposed region definitions for detailed maps of Mexico: 32 states (entidades federativas), one region each. See docs/REGIONS-MX.md.",
+  "status": "proposal",
+  "checked": "2026-11-18",
+  "codes": {
+    "proposal": "ISO 3166-2:MX state codes, MX-AGU to MX-ZAC (three letters after MX-).",
+    "why": "The three-letter suffixes do not collide with any US state code in STATE_CODES (engine/address_search.py), which are two letters. A bare MX is not a US code.",
+    "verified": "The ISO 3166-2:MX codes were not checked against the ISO site in this change."
+  },
+  "layer_keys": {
+    "terrain": "terrain.sqlite",
+    "water": "water.sqlite",
+    "dams": "water.sqlite (nid part today)",
+    "crops": "crops.sqlite",
+    "buildings": "buildings.sqlite",
+    "places": "places.sqlite",
+    "addresses": "derived/geo/addresses/<code>.sqlite",
+    "pois": "poi rows in national.sqlite"
+  },
+  "licences": {
+    "INEGI-Libre-Uso": {
+      "name": "Términos de Libre Uso de la Información del INEGI",
+      "url": "https://www.inegi.org.mx/contenidos/inegi/doc/terminos_info.pdf",
+      "attribution": "Fuente: INEGI, <product name>, e.g. \"Fuente: INEGI, Marco Geoestadístico 2023\". Notify end users of any analysis or transformation; do not suggest INEGI endorses the result.",
+      "share_alike": false,
+      "verified": "terms PDF opened 2026-11-18"
+    },
+    "ODbL-1.0": {
+      "name": "Open Database License 1.0",
+      "url": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "attribution": "\"© OpenStreetMap contributors\"",
+      "share_alike": true,
+      "verified": "as for the US map"
+    },
+    "Copernicus-WorldDEM-30": {
+      "name": "Copernicus WorldDEM-30 licence",
+      "url": "see docs/regions-proposed.json",
+      "attribution": "see docs/regions-proposed.json",
+      "share_alike": false,
+      "verified": "as in docs/regions-proposed.json"
+    },
+    "CC-BY-4.0": {
+      "name": "Creative Commons Attribution 4.0 International",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Credit the publisher (Google Open Buildings: \"Google Open Buildings\"; Overture: see attribution page).",
+      "share_alike": false,
+      "verified": "opened 2026-11-18"
+    }
+  },
+  "country_layers": {
+    "terrain": [
+      {
+        "dataset": "CEM 4.0 (Continuo de Elevaciones Mexicano, ~15 m, bare-earth DTM, COG)",
+        "publisher": "INEGI",
+        "url": "https://www.inegi.org.mx/app/geo2/elevacionesmex/",
+        "licence": "INEGI-Libre-Uso",
+        "verified": "opened 2026-11-18",
+        "role": "primary",
+        "notes": "National bare-earth model at ~15 m, close to the 30 m the app uses today. CEM 4.0 derived from ALOS PALSAR (JAXA) with LiDAR gap-filling; coverage complete over continental Mexico, partial over islands. Download by state or by area."
+      },
+      {
+        "dataset": "Copernicus DEM GLO-30",
+        "publisher": "ESA / Airbus",
+        "url": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM",
+        "licence": "Copernicus-WorldDEM-30",
+        "verified": "opened 2026-11-18 (as in REGIONS-ES.md)",
+        "role": "alternative",
+        "notes": "Surface model: follows canopy and roofs."
+      }
+    ],
+    "water": [
+      {
+        "dataset": "INEGI Red Hidrográfica Nacional (rivers, lakes, streams; WMS/SHP)",
+        "publisher": "INEGI",
+        "url": "https://www.inegi.org.mx/temas/hidrografia/",
+        "licence": "INEGI-Libre-Uso",
+        "verified": "search only (product page not opened directly)",
+        "role": "primary",
+        "notes": "National hydrographic network at 1:250,000. Download as shapefile from INEGI."
+      },
+      {
+        "dataset": "CONAGUA Ríos Principales (WMS/WFS)",
+        "publisher": "CONAGUA",
+        "url": "https://sigagis.conagua.gob.mx/ArcGIS/rest/services/gca/conagua/MapServer",
+        "licence": "not stated on the page (search only)",
+        "verified": "search only 2026-11-18",
+        "role": "alternative",
+        "notes": "ArcGIS REST service; layer 'Ríos Principales' (layer 3). Licence not confirmed."
+      },
+      {
+        "dataset": "OSM waterways and water areas",
+        "publisher": "OSM contributors",
+        "url": "https://download.geofabrik.de/north-america/mexico.html",
+        "licence": "ODbL-1.0",
+        "verified": "as for the US map",
+        "role": "fallback"
+      }
+    ],
+    "dams": [
+      {
+        "dataset": "CONAGUA Catálogo de Presas (dam catalog, CSV, 210+ dams with coordinates)",
+        "publisher": "CONAGUA",
+        "url": "https://sih.conagua.gob.mx/presas.html",
+        "licence": "not stated on the page (search only)",
+        "verified": "catalog page opened 2026-11-18; CSV not downloaded (redirect loop); dam count (~210) seen in search results; licence not confirmed",
+        "role": "primary",
+        "notes": "Fields: name, latitude, longitude, altitude, state, municipality, basin, hydrological region. ArcGIS REST also available at sigagis.conagua.gob.mx."
+      },
+      {
+        "dataset": "OSM waterway=dam",
+        "publisher": "OSM contributors",
+        "url": "https://wiki.openstreetmap.org/wiki/Tag:waterway%3Ddam",
+        "licence": "ODbL-1.0",
+        "verified": "not checked",
+        "role": "fallback"
+      }
+    ],
+    "crops": [
+      {
+        "dataset": "INEGI Conjunto de datos vectoriales de uso del suelo y vegetación, escala 1:250,000, serie VII (2018)",
+        "publisher": "INEGI",
+        "url": "https://www.inegi.org.mx/temas/uso-suelo/",
+        "licence": "INEGI-Libre-Uso",
+        "verified": "search only 2026-11-18",
+        "role": "primary",
+        "notes": "National land-use and vegetation at 1:250,000, series I (1992) to VII (2018). Includes crop types specific to Mexico (agave, agostadero, temporal, etc.) that have no US class. The mapping to orchard/vineyard/berry + Mexican crops would need new kinds."
+      },
+      {
+        "dataset": "ESA WorldCover 2021, 10 m (land cover, not crop types)",
+        "publisher": "ESA WorldCover consortium",
+        "url": "https://esa-worldcover.org/",
+        "licence": "CC-BY-4.0",
+        "verified": "as in REGIONS-AR.md",
+        "role": "fallback",
+        "notes": "10 m land cover, not crop types. Coarser than the INEGI vegetation data."
+      }
+    ],
+    "buildings": [
+      {
+        "dataset": "Google Open Buildings V3 (building footprints from satellite imagery)",
+        "publisher": "Google Research",
+        "url": "https://sites.research.google/open-buildings/",
+        "licence": "CC-BY-4.0",
+        "verified": "opened 2026-11-18",
+        "role": "primary",
+        "notes": "1.8B building detections across Africa, Latin America, Caribbean, South Asia and SE Asia. Mexico is covered. CC BY 4.0 and ODbL; user may choose either. Confidence scores provided."
+      },
+      {
+        "dataset": "OSM buildings",
+        "publisher": "OSM contributors",
+        "url": "https://download.geofabrik.de/north-america/mexico.html",
+        "licence": "ODbL-1.0",
+        "verified": "as for the US map",
+        "role": "fallback",
+        "notes": "OSM has building footprints in urban areas; coverage is thinner in rural Mexico."
+      }
+    ],
+    "places": [
+      {
+        "dataset": "INEGI Marco Geoestadístico (AGEE, AGEM, localidades; names and codes)",
+        "publisher": "INEGI",
+        "url": "https://www.inegi.org.mx/temas/mg/",
+        "licence": "INEGI-Libre-Uso",
+        "verified": "opened 2026-11-18 (shapefile downloaded for bbox computation)",
+        "role": "primary",
+        "notes": "National framework of states (AGEE), municipalities (AGEM) and localities. Updated yearly; version 2025 available. Also includes 2,467 municipalities and 16 demarcaciones territoriales of Mexico City."
+      },
+      {
+        "dataset": "OSM place=*",
+        "publisher": "OSM contributors",
+        "url": "https://download.geofabrik.de/north-america/mexico.html",
+        "licence": "ODbL-1.0",
+        "verified": "as for the US map",
+        "role": "named places"
+      }
+    ],
+    "addresses": [
+      {
+        "dataset": "Overture addresses (MX)",
+        "publisher": "Overture Maps Foundation, from INEGI through OpenAddresses",
+        "url": "https://docs.overturemaps.org/attribution/",
+        "licence": "INEGI-Libre-Uso",
+        "verified": "opened 2026-11-18 (Overture address guide; counts are the publisher's, not a count made for this proposal)",
+        "role": "primary",
+        "notes": "Release 2026-11-18.0, publisher's address-guide counts: 30,726,687 MX rows, third after the US (126,202,222) and Brazil (89,887,635). Source: 'INEGI, Censos Económicos. Términos de Libre Uso. Distributed by OpenAddresses. Accessed: 2026-11-17.' Per-state counts not computed. Splitting on the first two postcode digits as the INEGI state code would assign rows to the wrong state (Aguascalientes starts at 20000, Zacatecas at 98000). Left as future work (state polygon, or a CP-to-state table whose rights are checked)."
+      }
+    ],
+    "pois": [
+      {
+        "dataset": "OSM help points",
+        "publisher": "OSM contributors",
+        "url": "https://taginfo.geofabrik.de/north-america:mexico/",
+        "licence": "ODbL-1.0",
+        "verified": "taginfo API opened 2026-11-18",
+        "role": "primary",
+        "counts_as_of": "2026-11-17T21:19:28Z",
+        "counts": {
+          "amenity=pharmacy": 7943,
+          "amenity=fire_station": 426,
+          "amenity=police": 1491,
+          "amenity=hospital": 3507,
+          "amenity=clinic": 5117,
+          "amenity=drinking_water": 548,
+          "man_made=water_tap": 93,
+          "man_made=water_well": 685,
+          "natural=spring": 247,
+          "emergency=water_tank": 49,
+          "emergency=defibrillator": 23,
+          "tourism=wilderness_hut": 16,
+          "tourism=alpine_hut": 103,
+          "amenity=shelter": 2139,
+          "amenity=fountain": 3074
+        }
+      }
+    ]
+  },
+  "not_open_nationwide": [
+    "Postcode areas: Mexico has no open national postcode-area layer. SEPOMEX (the postal service) owns postcode data but does not publish areas as open data. INEGI's Marco Geoestadístico includes locality points, not postcode areas."
+  ],
+  "addressing": {
+    "postal_code": {
+      "format": "Five digits (CP, código postal), the same shape as a US ZIP code. Kept as text because leading zeros occur (for example 06600 Ciudad de México). The first two digits are not the INEGI state code: Aguascalientes (INEGI 01) starts at 20000 and Zacatecas (INEGI 32) at 98000. A per-state split is future work (state polygon, or a CP-to-state table whose rights are checked).",
+      "example_pattern": "00000"
+    },
+    "order": "Street type, street name, then number, then postcode and town: \"Av. Reforma, 123, 06600 Ciudad de México\". The type comes first (Avenida, Calle, Boulevard, Privada, Andador) and is often abbreviated (Av., C., Blvd., Priv., And.).",
+    "notes": "normalize() and norm() keep only a-z and 0-9; Spanish accents (á, é, í, ó, ú, ñ) and Mexican street abbreviations would need folding on both sides, as noted for Spain. Mexican addresses sometimes use 'S/N' (sin número, 'no number'), like the Spanish 'S-N'. is_address_query() needs a number first, so \"Av. Reforma 123, 06600\" is not treated as an address today. tools/build_addresses.py keeps only country = 'US'; would need to accept country = 'MX'. Checked in this repository on 2026-11-18."
+  },
+  "regions": [
+    {
+      "code": "MX-AGU",
+      "name": "Aguascalientes",
+      "name_en": "Aguascalientes",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "01",
+      "bbox": {
+        "west": -102.8742,
+        "south": 21.6223,
+        "east": -101.8353,
+        "north": 22.4596,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -103.03,
+          21.47,
+          -101.68,
+          22.61
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-BCN",
+      "name": "Baja California",
+      "name_en": "Baja California",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "02",
+      "bbox": {
+        "west": -118.3653,
+        "south": 28.0,
+        "east": -112.2968,
+        "north": 32.7187,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -118.52,
+          27.85,
+          -112.14,
+          32.87
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "Box reaches the US border in the north (Imperial County, California); the Guadalupe Island (29° N) is inside the box."
+    },
+    {
+      "code": "MX-BCS",
+      "name": "Baja California Sur",
+      "name_en": "Baja California Sur",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "03",
+      "bbox": {
+        "west": -115.7661,
+        "south": 22.8717,
+        "east": -109.4131,
+        "north": 28.0,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -115.92,
+          22.72,
+          -109.26,
+          28.15
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "The Baja California peninsula is separated from MX-BCN by the 28° N line; both states must be separate regions."
+    },
+    {
+      "code": "MX-CAM",
+      "name": "Campeche",
+      "name_en": "Campeche",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "04",
+      "bbox": {
+        "west": -92.4688,
+        "south": 17.8129,
+        "east": -89.1212,
+        "north": 20.8483,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -92.62,
+          17.66,
+          -88.97,
+          21.0
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-COA",
+      "name": "Coahuila de Zaragoza",
+      "name_en": "Coahuila",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "05",
+      "bbox": {
+        "west": -103.96,
+        "south": 24.5427,
+        "east": -99.8431,
+        "north": 29.88,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -104.11,
+          24.39,
+          -99.69,
+          30.03
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-COL",
+      "name": "Colima",
+      "name_en": "Colima",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "06",
+      "bbox": {
+        "west": -114.7595,
+        "south": 18.3389,
+        "east": -103.4863,
+        "north": 19.5125,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -114.91,
+          18.18,
+          -103.33,
+          19.67
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "Box includes the Revillagigedo Islands (Socorro, San Benedicto, Clarión, Roca Partida), which belong to Colima. The western edge at about -114.76 is Isla Clarión (about 18.36 N, 114.73 W), about 700 km from the mainland, not Socorro (about 18.78 N, 110.98 W)."
+    },
+    {
+      "code": "MX-CHP",
+      "name": "Chiapas",
+      "name_en": "Chiapas",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "07",
+      "bbox": {
+        "west": -94.1392,
+        "south": 14.5321,
+        "east": -90.3702,
+        "north": 17.9853,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -94.29,
+          14.38,
+          -90.22,
+          18.14
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-CHH",
+      "name": "Chihuahua",
+      "name_en": "Chihuahua",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "08",
+      "bbox": {
+        "west": -109.0749,
+        "south": 25.5588,
+        "east": -103.3068,
+        "north": 31.7845,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -109.23,
+          25.4,
+          -103.15,
+          31.94
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-CMX",
+      "name": "Ciudad de México",
+      "name_en": "Mexico City",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "09",
+      "bbox": {
+        "west": -99.3649,
+        "south": 19.0482,
+        "east": -98.9403,
+        "north": 19.5928,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -99.52,
+          18.89,
+          -98.79,
+          19.75
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "Borders MX-MEX to the north, east and west and MX-MOR to the south, so not fully surrounded by MX-MEX. Smallest region by area (about 1,500 km²; INEGI 2024 geographic compendium, on the December 2023 framework, gives 1,494.3 km²), smaller than MX-TLA. Box overlaps MX-MEX. Do not split addresses by treating the first two postcode digits as the INEGI code; that split is future work."
+    },
+    {
+      "code": "MX-DUR",
+      "name": "Durango",
+      "name_en": "Durango",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "10",
+      "bbox": {
+        "west": -107.2101,
+        "south": 22.3451,
+        "east": -102.4727,
+        "north": 26.8449,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -107.37,
+          22.19,
+          -102.32,
+          27.0
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-GUA",
+      "name": "Guanajuato",
+      "name_en": "Guanajuato",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "11",
+      "bbox": {
+        "west": -102.097,
+        "south": 19.9128,
+        "east": -99.6713,
+        "north": 21.8394,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -102.25,
+          19.76,
+          -99.52,
+          21.99
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-GRO",
+      "name": "Guerrero",
+      "name_en": "Guerrero",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "12",
+      "bbox": {
+        "west": -102.1844,
+        "south": 16.316,
+        "east": -98.0073,
+        "north": 18.8878,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -102.34,
+          16.16,
+          -97.85,
+          19.04
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-HID",
+      "name": "Hidalgo",
+      "name_en": "Hidalgo",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "13",
+      "bbox": {
+        "west": -99.8595,
+        "south": 19.5978,
+        "east": -97.9849,
+        "north": 21.3985,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -100.01,
+          19.44,
+          -97.83,
+          21.55
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-JAL",
+      "name": "Jalisco",
+      "name_en": "Jalisco",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "14",
+      "bbox": {
+        "west": -105.6954,
+        "south": 18.9259,
+        "east": -101.5105,
+        "north": 22.7502,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -105.85,
+          18.77,
+          -101.36,
+          22.91
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-MEX",
+      "name": "México",
+      "name_en": "State of Mexico",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "15",
+      "bbox": {
+        "west": -100.6131,
+        "south": 18.3669,
+        "east": -98.5969,
+        "north": 20.2859,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -100.77,
+          18.21,
+          -98.44,
+          20.44
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-MIC",
+      "name": "Michoacán de Ocampo",
+      "name_en": "Michoacán",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "16",
+      "bbox": {
+        "west": -103.7381,
+        "south": 17.9134,
+        "east": -100.063,
+        "north": 20.3946,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -103.89,
+          17.76,
+          -99.91,
+          20.55
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-MOR",
+      "name": "Morelos",
+      "name_en": "Morelos",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "17",
+      "bbox": {
+        "west": -99.4944,
+        "south": 18.3324,
+        "east": -98.6329,
+        "north": 19.1317,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -99.65,
+          18.18,
+          -98.48,
+          19.29
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "Between MX-MEX and MX-GRO; no coast."
+    },
+    {
+      "code": "MX-NAY",
+      "name": "Nayarit",
+      "name_en": "Nayarit",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "18",
+      "bbox": {
+        "west": -106.6877,
+        "south": 20.6032,
+        "east": -103.7209,
+        "north": 23.0845,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -106.84,
+          20.45,
+          -103.57,
+          23.24
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-NLE",
+      "name": "Nuevo León",
+      "name_en": "Nuevo León",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "19",
+      "bbox": {
+        "west": -101.2068,
+        "south": 23.1627,
+        "east": -98.4216,
+        "north": 27.7991,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -101.36,
+          23.01,
+          -98.27,
+          27.95
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-OAX",
+      "name": "Oaxaca",
+      "name_en": "Oaxaca",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "20",
+      "bbox": {
+        "west": -98.5527,
+        "south": 15.6569,
+        "east": -93.8674,
+        "north": 18.6697,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -98.71,
+          15.5,
+          -93.71,
+          18.82
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-PUE",
+      "name": "Puebla",
+      "name_en": "Puebla",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "21",
+      "bbox": {
+        "west": -99.0705,
+        "south": 17.8609,
+        "east": -96.7247,
+        "north": 20.84,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -99.23,
+          17.71,
+          -96.57,
+          20.99
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-QUE",
+      "name": "Querétaro",
+      "name_en": "Querétaro",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "22",
+      "bbox": {
+        "west": -100.5965,
+        "south": 20.015,
+        "east": -99.0431,
+        "north": 21.67,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -100.75,
+          19.86,
+          -98.89,
+          21.82
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-ROO",
+      "name": "Quintana Roo",
+      "name_en": "Quintana Roo",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "23",
+      "bbox": {
+        "west": -89.2966,
+        "south": 17.894,
+        "east": -86.7104,
+        "north": 21.6055,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -89.45,
+          17.74,
+          -86.56,
+          21.76
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "Includes Cozumel and Isla Mujeres; the easternmost region."
+    },
+    {
+      "code": "MX-SLP",
+      "name": "San Luis Potosí",
+      "name_en": "San Luis Potosí",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "24",
+      "bbox": {
+        "west": -102.296,
+        "south": 21.1602,
+        "east": -98.326,
+        "north": 24.4915,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -102.45,
+          21.01,
+          -98.17,
+          24.65
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-SIN",
+      "name": "Sinaloa",
+      "name_en": "Sinaloa",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "25",
+      "bbox": {
+        "west": -109.4447,
+        "south": 22.4671,
+        "east": -105.3922,
+        "north": 27.0423,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -109.6,
+          22.31,
+          -105.24,
+          27.2
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-SON",
+      "name": "Sonora",
+      "name_en": "Sonora",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "26",
+      "bbox": {
+        "west": -115.053,
+        "south": 26.297,
+        "east": -108.4243,
+        "north": 32.4939,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -115.21,
+          26.14,
+          -108.27,
+          32.65
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-TAB",
+      "name": "Tabasco",
+      "name_en": "Tabasco",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "27",
+      "bbox": {
+        "west": -94.13,
+        "south": 17.2509,
+        "east": -90.9875,
+        "north": 18.651,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -94.28,
+          17.1,
+          -90.83,
+          18.81
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-TAM",
+      "name": "Tamaulipas",
+      "name_en": "Tamaulipas",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "28",
+      "bbox": {
+        "west": -100.145,
+        "south": 22.207,
+        "east": -97.1443,
+        "north": 27.6791,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -100.3,
+          22.05,
+          -96.99,
+          27.83
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-TLA",
+      "name": "Tlaxcala",
+      "name_en": "Tlaxcala",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "29",
+      "bbox": {
+        "west": -98.7084,
+        "south": 19.1051,
+        "east": -97.6254,
+        "north": 19.7289,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -98.86,
+          18.95,
+          -97.47,
+          19.88
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": "Borders MX-PUE, MX-HID and MX-MEX, so not fully surrounded by MX-PUE. About 4,000 km², larger than MX-CMX. Do not split addresses by treating the first two postcode digits as the INEGI code."
+    },
+    {
+      "code": "MX-VER",
+      "name": "Veracruz de Ignacio de la Llave",
+      "name_en": "Veracruz",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "30",
+      "bbox": {
+        "west": -98.6815,
+        "south": 17.137,
+        "east": -93.6079,
+        "north": 22.4718,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -98.84,
+          16.98,
+          -93.45,
+          22.63
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-YUC",
+      "name": "Yucatán",
+      "name_en": "Yucatán",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "31",
+      "bbox": {
+        "west": -92.3263,
+        "south": 19.5512,
+        "east": -87.5331,
+        "north": 22.586,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -92.48,
+          19.4,
+          -87.38,
+          22.74
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    },
+    {
+      "code": "MX-ZAC",
+      "name": "Zacatecas",
+      "name_en": "Zacatecas",
+      "country": "Mexico",
+      "country_iso": "MX",
+      "admin_level": "state (entidad federativa)",
+      "inegi": "32",
+      "bbox": {
+        "west": -104.3535,
+        "south": 21.0419,
+        "east": -100.7423,
+        "north": 25.1252,
+        "source": {
+          "dataset": "INEGI Marco Geoestadístico, AGEE (Área Geoestadística Estatal), December 2023, shapefile in geographic coordinates (WGS84)",
+          "publisher": "INEGI",
+          "licence": "INEGI-Libre-Uso",
+          "url": "https://www.inegi.org.mx/temas/mg/",
+          "verified": "2026-11-18 (shapefile downloaded through CONABIO mirror, which is INEGI data)"
+        },
+        "padded_0_15": [
+          -104.51,
+          20.89,
+          -100.59,
+          25.28
+        ],
+        "padded_note": "west, south, east, north plus or minus 0.15°, rounded outward to 0.01°, the same margin map_sets.state uses for US states"
+      },
+      "layers": "country_layers",
+      "notes": ""
+    }
+  ]
+}

@@ -22,6 +22,9 @@ class AddressSearchTests(unittest.TestCase):
             ('18001', 'Nine Mile Road', 'Example', 'CA', '90001', 34.0, -118.0),
             ('23001', 'Maple Avenue', 'Kansas City', 'MO', '64105', 39.0997, -94.5786),
             ('21', 'W 9 ST', 'Example', 'CA', '90001', 34.01, -118.01),
+            ('12', 'Oak Court', 'Example', 'CA', '90001', 34.02, -118.02),
+            ('100', 'Main Street', 'Inglewood', 'CA', '90301', 33.96, -118.35),
+            ('100', 'Main Street', 'Newport Beach', 'CA', '92661', 33.60, -117.90),
         ])
 
     def tearDown(self):
@@ -68,6 +71,36 @@ class AddressSearchTests(unittest.TestCase):
         result = find_addresses('18001 nine mile CA', self.geo)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['detail'], 'Example, CA, 90001')
+
+    def test_street_ending_that_is_also_a_state_code(self):
+        # 'Ct' is Court before it is Connecticut, and 'NE' is northeast before it is Nebraska: neither state is installed here.
+        result = find_addresses('12 Oak Ct', self.geo)
+        self.assertEqual([r['name'] for r in result], ['12 Oak Court'])
+        self.write_state('DC', [
+            ('500', '4th Street NE', 'Washington', 'DC', '20002', 38.896, -77.000),
+            ('1600', 'Pennsylvania Avenue NW', 'Washington', 'DC', '20500', 38.8977, -77.0365),
+        ])
+        for query in ('500 4th St NE', '500 4th St NE 20002', '500 4th St NE Washington DC'):
+            with self.subTest(query=query):
+                self.assertEqual([r['name'] for r in find_addresses(query, self.geo)], ['500 4th Street NE'])
+
+    def test_installed_state_is_still_read_after_a_street_ending(self):
+        self.write_state('CT', [('12', 'Oak Street', 'Hartford', 'CT', '06103', 41.76, -72.67)])
+        self.assertEqual(find_addresses('12 Oak Ct', self.geo)[0]['detail'], 'Example, CA, 90001')      # the Court, as typed
+        self.assertEqual(find_addresses('12 Oak St CT', self.geo)[0]['detail'], 'Hartford, CT, 06103')
+        self.assertEqual(find_addresses('12 Oak Connecticut', self.geo)[0]['detail'], 'Hartford, CT, 06103')
+
+    def test_town_named_like_a_state(self):
+        self.write_state('DC', [('1600', 'Pennsylvania Avenue NW', 'Washington', 'DC', '20500', 38.8977, -77.0365)])
+        for query in ('1600 Pennsylvania Ave NW Washington', '1600 Pennsylvania Ave NW Washington DC'):
+            with self.subTest(query=query):
+                self.assertEqual([r['detail'] for r in find_addresses(query, self.geo)], ['Washington, DC, 20500'])
+
+    def test_state_that_is_not_installed_is_never_read_as_a_town(self):
+        # Indiana, Nebraska and Kansas are not installed. 'IN' must not find Inglewood, 'NE' Newport Beach, or 'Kansas' Kansas City.
+        for query in ('100 Main St IN', '100 Main St NE', '100 Main St Indiana', '100 Main St IN 90301', '23001 Maple Ave Kansas'):
+            with self.subTest(query=query):
+                self.assertEqual(find_addresses(query, self.geo), [])
 
     def test_ordinal_street(self):
         result = find_addresses('21 ninth st Example CA', self.geo)

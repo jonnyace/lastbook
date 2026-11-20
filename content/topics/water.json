@@ -265,7 +265,7 @@
   {
    "id": "chemical",
    "label": "Water may contain fuel, chemicals or sewage",
-   "hint": "Odd smell or color, spill, flood water, industrial area",
+   "hint": "Poisoned, odd smell or color, spill, flood water, industrial area",
    "read": [
     {
      "doc": "med-ea4055db35ff180d",

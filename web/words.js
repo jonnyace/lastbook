@@ -66,29 +66,43 @@
 
   // Topic search, scored as before: a word found in a topic's title, short line or keywords counts 1,
   // a word found in one of its choices counts 1.5; topics within 60% of the best score, top 3.
+  // A choice's "urgent" phrases ("not breathing") pick that choice for its topic whenever the search names one,
+  // even if another choice matches more words ("fractured neck and not breathing"). They don't change the score.
   const cache = new WeakMap();   // topics are replaced, never edited in place
   function topicMatchers(t) {
     let m = cache.get(t);
     if (!m) {
+      const shown = (t.choices || []).filter(c => !c.goto);
       m = { hay: matcher([t.title, t.short, ...(t.keywords || [])].join(' ')),
-            choices: (t.choices || []).filter(c => !c.goto).map(c => ({ c, has: matcher(c.label + ' ' + (c.hint || '')) })) };
+            choices: shown.map(c => ({ c, has: matcher(c.label + ' ' + (c.hint || '')) })),
+            urgent: shown.filter(c => c.urgent).map(c => ({ c, phrases: c.urgent.map(splitWords).filter(p => p.length) })) };
       cache.set(t, m);
     }
     return m;
   }
+  // Does a phrase's words appear in order, as whole words, among all the search's words (stop words included)?
+  function names(all, p) {
+    return all.some((_, i) => p.every((w, j) => all[i + j] === w));
+  }
   function rankTopics(q, topics, stop) {
     const words = queryWords(q, stop);
     if (!words.length || !topics) return [];
-    const out = [];
+    const all = splitWords(q), out = [];
     for (const t of topics) {
       const m = topicMatchers(t);
       const s = words.filter(m.hay).length;
       let best = null, bs = 0;
       for (const { c, has } of m.choices) { const n = words.filter(has).length; if (n > bs) { bs = n; best = c } }
-      if (s || bs) out.push({ t, c: best, s: s + bs * 1.5 });
+      const u = m.urgent.find(x => x.phrases.some(p => names(all, p)));
+      if (u) best = u.c;
+      if (s || bs) out.push({ t, c: best, s: s + bs * 1.5, u: !!u });
     }
     out.sort((a, b) => b.s - a.s);
-    return out.filter(o => o.s >= out[0]?.s * 0.6).slice(0, 3);
+    const shown = out.filter(o => o.s >= out[0]?.s * 0.6);
+    // A guide whose urgent phrase the search names comes first, even below the cut ("unconscious in the flood water").
+    // Without one, the list is exactly as before.
+    const urgent = out.filter(o => o.u);
+    return [...urgent, ...shown.filter(o => !o.u)].slice(0, 3).map(({ t, c, s }) => ({ t, c, s }));
   }
 
   root.SearchWords = Object.freeze({ fold, splitWords, queryWords, matcher, rankTopics, hasSegmenter: () => !!segmenter() });

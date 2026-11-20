@@ -185,12 +185,29 @@ def linux_ai_runtime():
 
 # ------------------------------------------------------------------------------------------------------------- disks --
 def disk_of(path):
-    """(free, total) on the disk that holds path, or the nearest folder above it that exists."""
+    """(free, total) on the disk that holds path, or the nearest folder above it that exists.
+    On a Mac, free is what Finder calls available, as on the iPad (ZipInstall.freeSpace): it counts the room macOS makes on its own
+    when a file the person asked for needs it (purgeable caches, local snapshots). The plain free count leaves that out, and on a
+    Mac that has been used a while it can be tens of GB short, so setup said there was no room when Finder said there was (#112)."""
     p = Path(path)
     while not p.exists() and p.parent != p:
         p = p.parent
     u = shutil.disk_usage(p)
-    return u.free, u.total
+    free = u.free
+    if sys.platform == 'darwin':
+        free = max(free, _mac_available(p) or 0)
+    return free, u.total
+
+
+def _mac_available(p):
+    """macOS's room for a file the person asked for (NSURLVolumeAvailableCapacityForImportantUsageKey), or None if it cannot say."""
+    try:
+        import Foundation
+        ok, n, _ = Foundation.NSURL.fileURLWithPath_(str(p)).getResourceValue_forKey_error_(
+            None, Foundation.NSURLVolumeAvailableCapacityForImportantUsageKey, None)
+        return int(n) if ok and n is not None and int(n) > 0 else None
+    except Exception:
+        return None
 
 
 def disk_name(path):

@@ -29,7 +29,7 @@ TOPICS = [json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'con
 QSTOP = re.search(r"const QSTOP = new Set\('([^']*)'\.split", (ROOT / 'web' / 'app.js').read_text(encoding='utf-8')).group(1).split(' ')
 
 # upstream/main when these numbers were measured. Re-measure BASE_FIRST on a new main and record the new one.
-BASELINE = '9542e80'
+BASELINE = '1d847d0 + #44'   # 9542e80 before; #44's burn hints moved the two burn rows to the burn choice
 
 # ----------------------------------------------------------------------------------------------------------
 # The measure. #154 counts "the top 8 hits whose title or excerpt has a word a useful page would have". At
@@ -86,8 +86,8 @@ BASE_FIRST = {
     'treat water in the lungs after drowning': ['water', 'keepclean'],
     'someone fell in the rainwater pool and is not breathing': ['hurt', 'breathing'],
     'my son nearly drowned in the rainwater pool': ['water', 'outside'],
-    'i burnt my fingers lighting the campfire': ['hurt', 'heatcold'],
-    'burned my hand trying to light a fire': ['disaster', 'earthquake-after'],
+    'i burnt my fingers lighting the campfire': ['hurt', 'burn'],             # ['hurt', 'heatcold'] on 9542e80
+    'burned my hand trying to light a fire': ['hurt', 'burn'],                # ['disaster', 'earthquake-after'] on 9542e80
     'my clothes caught fire while starting the fire': ['disaster', 'earthquake-after'],
     'i burned my hand on the camp stove': ['food', 'cook'],
     'my child swallowed lamp oil': ['hurt', 'poison'],
@@ -112,10 +112,8 @@ BASE_FIRST = {
 KNOWN_GAPS = {
     'treat water in the lungs after drowning': 0.0,
     'my son nearly drowned in the rainwater pool': 0.0,
-    'burned my hand trying to light a fire': 0.0,
     'my clothes caught fire while starting the fire': 0.0,
     'i burned my hand on the camp stove': 0.0,
-    'i burnt my fingers lighting the campfire': 0.5,   # right guide, wrong choice
     'carbon monoxide from making a fire in the tent': 0.5,
 }
 
